@@ -63,14 +63,31 @@ class HomePage extends StatelessWidget {
                           "My plans",
                           style: TextStyle(fontSize: 24.0),
                         ),
-                        ...List.generate(
-                          controller.plans.length,
-                          (index) => Padding(
+                        if (controller.plans.isEmpty)
+                          Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: PlanCard(
-                              id: controller.plans[index].id,
-                              title: controller.plans[index].name,
-                              semester: controller.plans[index].semester,
+                            child: Text(
+                              "No plans yet",
+                              style:
+                                  TextStyle(fontSize: 16.0, color: Colors.grey),
+                            ),
+                          ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: List.generate(
+                                controller.plans.length,
+                                (index) => Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: PlanCard(
+                                    id: controller.plans[index].id,
+                                    title: controller.plans[index].name,
+                                    semester: controller.plans[index].semester,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
