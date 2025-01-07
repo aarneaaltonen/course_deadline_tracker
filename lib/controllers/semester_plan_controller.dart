@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+//TODO: might refactor some logic to a service file
 class SemesterPlanController {
   final storage = Hive.box('storage');
 
@@ -35,6 +36,14 @@ class SemesterPlanController {
   void deletePlan(String id) {
     plans.removeWhere((plan) => plan.id == id);
     _save();
+  }
+
+  SemesterPlan? getPlanById(String id) {
+    try {
+      return plans.firstWhere((plan) => plan.id == id);
+    } catch (e) {
+      return null; // Return null if no plan is found with the given ID
+    }
   }
 }
 

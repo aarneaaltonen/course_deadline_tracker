@@ -1,13 +1,15 @@
 import 'package:aalto_course_tracker/controllers/semester_plan_controller.dart';
-import 'package:aalto_course_tracker/widgets/plan_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'widgets/add_semester_plan_button.dart';
+import 'pages/home_page.dart';
+import 'pages/planner_page.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox('storage');
+  await dotenv.load(fileName: ".env");
   Get.lazyPut<SemesterPlanController>(() => SemesterPlanController());
   runApp(const MyApp());
 }
@@ -31,96 +33,6 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/', page: () => HomePage()),
         GetPage(name: '/plan/:id', page: () => PlanPage()),
       ],
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  final controller = Get.find<SemesterPlanController>();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Aalto Deadline Tracker'),
-      ),
-      body: Stack(
-        children: <Widget>[
-          Positioned(
-            top: 16.0,
-            right: 16.0,
-            child: AddSemesterPlanButton(),
-          ),
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: Obx(
-                  () => Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "My plans",
-                          style: TextStyle(fontSize: 24.0),
-                        ),
-                        if (controller.plans.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text(
-                              "No plans yet",
-                              style:
-                                  TextStyle(fontSize: 16.0, color: Colors.grey),
-                            ),
-                          ),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(
-                                controller.plans.length,
-                                (index) => Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: PlanCard(
-                                    id: controller.plans[index].id,
-                                    title: controller.plans[index].name,
-                                    semester: controller.plans[index].semester,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-//TODO: refactor this to a separate file
-class PlanPage extends StatelessWidget {
-  final String id = Get.parameters['id']!;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(id),
-      ),
-      body: Center(
-        child: Text('Extract plan data here for $id, from hive storage'),
-      ),
     );
   }
 }
