@@ -1,9 +1,27 @@
 import 'package:aalto_course_tracker/models/models.dart';
 import 'package:get/get.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 class SemesterPlanController {
-  final plans = <SemesterPlan>[].obs; //todo create plan model
+  final storage = Hive.box('storage');
+
+  RxList<SemesterPlan> plans = <SemesterPlan>[].obs;
+
+  SemesterPlanController() {
+    if (storage.get('plans') == null) {
+      storage.put('plans', []);
+    }
+    final storedPlans = storage.get('plans') as List;
+    plans.value = storedPlans.map((plan) {
+      final planMap = Map<String, dynamic>.from(plan as Map);
+      return SemesterPlan.fromJson(planMap);
+    }).toList();
+  }
+
+  void _save() {
+    storage.put('plans', plans.map((plan) => plan.toJson()).toList());
+  }
 
   void addPlan(String title, String semester) {
     final uuid = Uuid();
@@ -11,6 +29,12 @@ class SemesterPlanController {
     final newPlan =
         SemesterPlan(id: id, name: title, semester: semester, courses: []);
     plans.add(newPlan);
+    _save();
+  }
+
+  void deletePlan(String id) {
+    plans.removeWhere((plan) => plan.id == id);
+    _save();
   }
 }
 

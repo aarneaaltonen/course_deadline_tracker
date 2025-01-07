@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../controllers/semester_plan_controller.dart';
+
 class PlanCard extends StatelessWidget {
   final String title;
   final String semester;
@@ -57,11 +59,12 @@ class PlanCard extends StatelessWidget {
 
 class PlanPopover extends StatelessWidget {
   final String id;
+  final controller = Get.find<SemesterPlanController>();
 
-  const PlanPopover({Key? key, required this.id}) : super(key: key);
+  PlanPopover({Key? key, required this.id}) : super(key: key);
 
   void _deletePlan() {
-    // TODO: Implement plan deletion
+    controller.deletePlan(id);
   }
 
   @override

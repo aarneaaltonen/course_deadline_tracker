@@ -11,6 +11,15 @@ class SemesterPlan {
     required this.courses,
   });
 
+  Map toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'semester': semester,
+      'courses': courses.map((course) => course.toJson()).toList(),
+    };
+  }
+
   factory SemesterPlan.fromJson(Map<String, dynamic> json) {
     return SemesterPlan(
       id: json['id'],
@@ -35,6 +44,15 @@ class Course {
     required this.code,
     required this.deadlines,
   });
+
+  Map toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'code': code,
+      'deadlines': deadlines.map((deadline) => deadline.toJson()).toList(),
+    };
+  }
 
   factory Course.fromJson(Map<String, dynamic> json) {
     return Course(
@@ -62,6 +80,16 @@ class Deadline {
     required this.dueDate,
     this.isCompleted = false,
   });
+
+  Map toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'dueDate': dueDate.toIso8601String(),
+      'isCompleted': isCompleted,
+    };
+  }
 
   factory Deadline.fromJson(Map<String, dynamic> json) {
     return Deadline(

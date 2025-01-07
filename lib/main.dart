@@ -2,9 +2,12 @@ import 'package:aalto_course_tracker/controllers/semester_plan_controller.dart';
 import 'package:aalto_course_tracker/widgets/plan_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'widgets/add_semester_plan_button.dart';
 
-void main() {
+Future<void> main() async {
+  await Hive.initFlutter();
+  await Hive.openBox('storage');
   Get.lazyPut<SemesterPlanController>(() => SemesterPlanController());
   runApp(const MyApp());
 }
@@ -40,7 +43,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Aalto Semester Tracker'),
+        title: const Text('Aalto Deadline Tracker'),
       ),
       body: Stack(
         children: <Widget>[
@@ -104,6 +107,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
+//TODO: refactor this to a separate file
 class PlanPage extends StatelessWidget {
   final String id = Get.parameters['id']!;
 
