@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../controllers/courses_controller.dart';
 import '../controllers/semester_plan_controller.dart';
 import '../widgets/add_course_ button.dart';
+import '../widgets/course_card.dart';
 
 class PlanPage extends StatelessWidget {
   final String id = Get.parameters['id']!;
@@ -41,23 +42,26 @@ class PlanPage extends StatelessWidget {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: AddCourseButton(semesterPlanId: id),
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                AddCourseButton(semesterPlanId: id),
+              ],
+            ),
           ),
           Expanded(
             child: Obx(() {
               final courses = coursesController.fetchCoursesForPlan(id);
-              return ListView.builder(
-                itemCount: courses.length,
-                itemBuilder: (context, index) {
-                  final course = courses[index];
-                  return Card(
-                    child: ListTile(
-                      title: Text(course.name),
-                      subtitle: Text('ID: ${course.id}'),
-                    ),
-                  );
-                },
+              return Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ListView.builder(
+                  itemCount: courses.length,
+                  itemBuilder: (context, index) {
+                    final course = courses[index];
+                    return CourseCard(course: course);
+                  },
+                ),
               );
             }),
           ),

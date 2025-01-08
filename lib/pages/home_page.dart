@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Aalto Deadline Tracker'),
+        title: const Text('Course Deadline Tracker'),
       ),
       body: Stack(
         children: <Widget>[

@@ -36,6 +36,7 @@ class Course {
   final String id;
   final String semesterPlanId;
   final String name;
+  final String color;
   final String? code;
   final List<Deadline> deadlines;
 
@@ -43,6 +44,7 @@ class Course {
     required this.id,
     required this.semesterPlanId,
     required this.name,
+    this.color = '0xFF90CAF9',
     this.code,
     required this.deadlines,
   });
@@ -51,6 +53,7 @@ class Course {
     return {
       'id': id,
       'semesterPlanId': semesterPlanId,
+      'color': color,
       'name': name,
       'code': code,
       'deadlines': deadlines.map((deadline) => deadline.toJson()).toList(),
@@ -62,6 +65,7 @@ class Course {
       id: json['id'],
       semesterPlanId: json['semesterPlanId'],
       name: json['name'],
+      color: json['color'],
       code: json['code'],
       deadlines: (json['deadlines'] as List)
           .map((deadline) => Deadline.fromJson(deadline))

@@ -20,6 +20,10 @@ class CourseController {
     }).toList();
   }
 
+  void _save() {
+    storage.put('courses', courses.map((course) => course.toJson()).toList());
+  }
+
   void addCourse(String courseName, String semesterPlanId) {
     final uuid = Uuid();
     final id = uuid.v4();
@@ -30,6 +34,7 @@ class CourseController {
       deadlines: [],
     );
     courses.add(newCourse);
+    _save();
   }
 
   void listCourses(String semesterPlanId) {
