@@ -34,20 +34,23 @@ class SemesterPlan {
 
 class Course {
   final String id;
+  final String semesterPlanId;
   final String name;
-  final String code;
+  final String? code;
   final List<Deadline> deadlines;
 
   Course({
     required this.id,
+    required this.semesterPlanId,
     required this.name,
-    required this.code,
+    this.code,
     required this.deadlines,
   });
 
   Map toJson() {
     return {
       'id': id,
+      'semesterPlanId': semesterPlanId,
       'name': name,
       'code': code,
       'deadlines': deadlines.map((deadline) => deadline.toJson()).toList(),
@@ -57,6 +60,7 @@ class Course {
   factory Course.fromJson(Map<String, dynamic> json) {
     return Course(
       id: json['id'],
+      semesterPlanId: json['semesterPlanId'],
       name: json['name'],
       code: json['code'],
       deadlines: (json['deadlines'] as List)
@@ -68,6 +72,7 @@ class Course {
 
 class Deadline {
   final String id;
+  final String courseId;
   final String name;
   final String description;
   final DateTime dueDate;
@@ -75,6 +80,7 @@ class Deadline {
 
   Deadline({
     required this.id,
+    required this.courseId,
     required this.name,
     required this.description,
     required this.dueDate,
@@ -85,6 +91,7 @@ class Deadline {
     return {
       'id': id,
       'name': name,
+      'courseId': courseId,
       'description': description,
       'dueDate': dueDate.toIso8601String(),
       'isCompleted': isCompleted,
@@ -94,6 +101,7 @@ class Deadline {
   factory Deadline.fromJson(Map<String, dynamic> json) {
     return Deadline(
       id: json['id'],
+      courseId: json['courseId'],
       name: json['name'],
       description: json['description'],
       dueDate: DateTime.parse(json['dueDate']),

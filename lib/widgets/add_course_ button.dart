@@ -1,58 +1,61 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 
-import '../models/models.dart';
+import '../controllers/courses_controller.dart';
 
-class CourseApiController extends GetxController {
-  List<Course>? courseList;
-  var apiCourseData = [].obs;
-
-  Future<void> fetchapiCourseData() async {
-    final userKey = dotenv.env['USER_KEY'];
-    final response = await http.get(
-      Uri.parse(
-          //Todo: replace with the correct endpoint AND CACHE
-          'https://course.api.aalto.fi:443/api/sisu/v1/courseunits?user_key=$userKey'),
-    );
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      apiCourseData.value =
-          data; // Assuming the response is a single course object
-    } else {
-      throw Exception('Failed to load course data');
-    }
-  }
-}
-
-//TODO: add state management for the searched
-//TODO: refactor, button opens form modal, form fetches course data
+//might use an api to find the courses, for now seems overkill
 class AddCourseButton extends StatelessWidget {
-  final CourseApiController courseController = Get.put(CourseApiController());
+  static final _formKey = GlobalKey<FormBuilderState>();
+  final String semesterPlanId;
+  final coursesController = Get.find<CourseController>();
+
+  AddCourseButton({required this.semesterPlanId});
 
   @override
   Widget build(BuildContext context) {
-    courseController.fetchapiCourseData();
-    return Column(
-      children: [
-        Obx(() {
-          if (courseController.apiCourseData.isEmpty) {
-            return Center(child: Text('No course data'));
-          }
-          return DropdownMenu(
-            dropdownMenuEntries: [
-              for (var course in courseController.apiCourseData.take(10))
-                DropdownMenuEntry(
-                  label:
-                      '${course['code']} ${course['name']?['en'] ?? 'No name'}',
-                  value: course['code'] ?? 'No code',
-                )
-            ],
-          );
-        }),
-      ],
+    return ElevatedButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                title: Text('Add Course'),
+                content: FormBuilder(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      FormBuilderTextField(
+                        name: 'course_name',
+                        decoration: InputDecoration(
+                          labelText: 'Course Name',
+                        ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                        ]),
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.saveAndValidate()) {
+                            _formKey.currentState?.reset();
+                            coursesController.addCourse(
+                                _formKey.currentState?.value['course_name'],
+                                semesterPlanId);
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: Text('Submit'),
+                      ),
+                    ],
+                  ),
+                ));
+          },
+        );
+      },
+      child: Text('Add Course'),
     );
   }
 }

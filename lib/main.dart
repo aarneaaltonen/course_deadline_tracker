@@ -1,3 +1,4 @@
+import 'package:aalto_course_tracker/controllers/courses_controller.dart';
 import 'package:aalto_course_tracker/controllers/semester_plan_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,7 +11,8 @@ Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox('storage');
   await dotenv.load(fileName: ".env");
-  Get.lazyPut<SemesterPlanController>(() => SemesterPlanController());
+  Get.put<CourseController>(CourseController());
+  Get.put<SemesterPlanController>(SemesterPlanController());
   runApp(const MyApp());
 }
 

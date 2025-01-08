@@ -10,7 +10,7 @@ class AddSemesterPlanButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //dont think wee need to inverse control here, controller used only here
+    //dont think wee need to inverse control here, form state controller used only here
     final SemesterPlanFormController controller =
         Get.put(SemesterPlanFormController());
 
@@ -79,7 +79,6 @@ class AddSemesterPlanButton extends StatelessWidget {
                   child: Text('Create'),
                   onPressed: () {
                     if (_formKey.currentState?.saveAndValidate() ?? false) {
-                      // Handle save action
                       planController.addPlan(
                         _formKey.currentState?.fields['title']?.value,
                         controller.isSelected.indexOf(true) == 0
