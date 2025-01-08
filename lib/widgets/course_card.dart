@@ -1,42 +1,25 @@
 import 'package:flutter/material.dart';
+import '../constants.dart';
 import '../models/models.dart';
 import 'add_deadline_button.dart';
 
 class CourseCard extends StatelessWidget {
   final Course course;
+  final String semester;
 
-  CourseCard({required this.course});
+  CourseCard({required this.course, required this.semester});
 
   @override
   Widget build(BuildContext context) {
-    final courseColor = Color(int.parse(course.color));
-
     return Card(
       elevation: 10.0,
-      color: courseColor,
       child: Row(
         children: [
           SizedBox(
-            width: 300,
-            height: 80,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Text(
-                      course.name,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  Expanded(child: Container()),
-                  AddDeadlineButton(courseId: course.id),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
+            width: AppConstants().springDifference *
+                    AppConstants.scalingFactor *
+                    (semester.toLowerCase() == 'autumn' ? 2 : 3) +
+                300,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -48,7 +31,7 @@ class CourseCard extends StatelessWidget {
               child: SizedBox(
                 height: 80,
                 child: CustomPaint(
-                  painter: GridPainter(),
+                  painter: GridPainter(semester: semester),
                   child: Container(), // Empty container to provide size
                 ),
               ),
@@ -61,17 +44,42 @@ class CourseCard extends StatelessWidget {
 }
 
 class GridPainter extends CustomPainter {
+  //draws week lines and progress line
+  final String semester;
+
+  GridPainter({required this.semester});
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = const Color.fromARGB(255, 201, 201, 201)
       ..strokeWidth = 1.0;
 
-    const double interval =
-        87.5; // calculate interval based on semester start and end dates
+    double interval = (AppConstants().springDifference *
+            AppConstants.scalingFactor) /
+        7.1; //show interval line every seven days, bunch of little rounding errors and the fact that years are 365.25 days long
+    //kinda culminates in the progress line being off relative week lines by a few pixels
 
     for (double x = 0; x <= size.width; x += interval) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+    }
+
+    if (true) {
+      final int springProgress = AppConstants().calculateSpringProgress();
+      final double autumnProgress = AppConstants().calculateAutumnProgress();
+      double progressX;
+      if (semester.toLowerCase() == 'spring') {
+        progressX =
+            springProgress / AppConstants().springDifference * size.width + 310;
+      } else {
+        progressX = autumnProgress * size.width;
+      }
+
+      final progressPaint = Paint()
+        ..color = const Color.fromARGB(255, 114, 0, 116)
+        ..strokeWidth = 2.0;
+
+      canvas.drawLine(Offset(progressX, -5), Offset(progressX, size.height + 5),
+          progressPaint);
     }
   }
 
