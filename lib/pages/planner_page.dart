@@ -4,8 +4,7 @@ import 'package:get/get.dart';
 
 import '../controllers/courses_controller.dart';
 import '../controllers/semester_plan_controller.dart';
-import '../widgets/add_course_ button.dart';
-import '../widgets/course_card.dart';
+import '../widgets/course_deadline_grid_container.dart';
 
 class PlanPage extends StatelessWidget {
   final String id = Get.parameters['id']!;
@@ -24,7 +23,7 @@ class PlanPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home, color: Colors.white),
               onPressed: () {
                 Get.offAllNamed('/home');
               },
@@ -41,28 +40,11 @@ class PlanPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                AddCourseButton(semesterPlanId: id),
-              ],
-            ),
-          ),
           Expanded(
             child: Obx(() {
               final courses = coursesController.fetchCoursesForPlan(id);
-              return Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ListView.builder(
-                  itemCount: courses.length,
-                  itemBuilder: (context, index) {
-                    final course = courses[index];
-                    return CourseCard(course: course);
-                  },
-                ),
-              );
+              return CourseDeadlineGridContainer(
+                  courses: courses, semester: planData.semester, planId: id);
             }),
           ),
         ],

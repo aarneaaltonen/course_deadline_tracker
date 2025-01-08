@@ -15,7 +15,7 @@ class AddCourseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return FilledButton(
       onPressed: () {
         showDialog(
           context: context,

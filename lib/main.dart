@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aalto_course_tracker/controllers/courses_controller.dart';
 import 'package:aalto_course_tracker/controllers/semester_plan_controller.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      scrollBehavior: CustomScrollBehavior(),
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -37,4 +40,12 @@ class MyApp extends StatelessWidget {
       ],
     );
   }
+}
+
+class CustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }
