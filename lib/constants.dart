@@ -1,42 +1,48 @@
 class AppConstants {
-  static const double scalingFactor = 5;
-  var springStartDate = DateTime(2025, 1, 6);
-  var springEndDate = DateTime(2025, 6, 6);
-  late int springDifference;
-  late double periodHeaderWidth = scalingFactor * springDifference;
+  static const double scalingFactor = 8;
+  static const double courseCardWidth = 300;
+  static const double calendarTailWidth = 1000;
+
+  final DateTime springStartDate = DateTime(2025, 1, 6);
+  final DateTime springEndDate = DateTime(2025, 6, 7);
+  late final int springDifference;
+  late final double periodHeaderWidth;
+
+  final DateTime autumnStartDate = DateTime(2025, 8, 25);
+  final DateTime autumnEndDate = DateTime(2025, 12, 14);
+  late final int autumnDifference;
+  late final double autumnPeriodHeaderWidth;
+
+  AppConstants() {
+    springDifference = daysBetween(springStartDate, springEndDate);
+    periodHeaderWidth = scalingFactor * springDifference;
+    autumnDifference = daysBetween(autumnStartDate, autumnEndDate);
+    autumnPeriodHeaderWidth = scalingFactor * autumnDifference;
+  }
+
+  int daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round().abs();
+  }
 
   int calculateSpringProgress() {
     final DateTime today = DateTime.now();
     if (today.isBefore(springStartDate)) {
       return 0;
-    } else if (today.isAfter(springEndDate)) {
-      return 0;
     } else {
-      final int daysFromStart = today.difference(springStartDate).inDays;
-
+      final int daysFromStart = daysBetween(springStartDate, today);
       return daysFromStart;
     }
   }
 
-  var autumnStartDate = DateTime(2025, 8, 25);
-  var autumnEndDate = DateTime(2025, 12, 14);
-  late int autumnDifference;
-  late double autumnPeriodHeaderWidth = scalingFactor * autumnDifference;
-
-  AppConstants() {
-    springDifference = springEndDate.difference(springStartDate).inDays;
-    autumnDifference = autumnEndDate.difference(autumnStartDate).inDays;
-  }
-
-  double calculateAutumnProgress() {
+  int calculateAutumnProgress() {
     final DateTime today = DateTime.now();
     if (today.isBefore(autumnStartDate)) {
-      return 0.0;
-    } else if (today.isAfter(autumnEndDate)) {
-      return 1.0;
+      return 0;
     } else {
-      final int daysFromStart = today.difference(autumnStartDate).inDays;
-      return daysFromStart / autumnDifference;
+      final int daysFromStart = daysBetween(autumnStartDate, today);
+      return daysFromStart;
     }
   }
 }

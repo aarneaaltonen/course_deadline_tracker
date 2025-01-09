@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../models/models.dart';
+import 'package:intl/intl.dart' as intl;
 
 class CourseCardLane extends StatelessWidget {
   final Course course;
@@ -18,7 +19,7 @@ class CourseCardLane extends StatelessWidget {
             width: AppConstants().springDifference *
                     AppConstants.scalingFactor *
                     (semester.toLowerCase() == 'autumn' ? 2 : 3) +
-                300,
+                AppConstants.calendarTailWidth,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -43,43 +44,70 @@ class CourseCardLane extends StatelessWidget {
 }
 
 class GridPainter extends CustomPainter {
-  //draws week lines and progress line
   final String semester;
 
   GridPainter({required this.semester});
+
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color.fromARGB(255, 201, 201, 201)
-      ..strokeWidth = 1.0;
+    const double leftOffset = AppConstants.courseCardWidth;
+    final double availableWidth = size.width - AppConstants.calendarTailWidth;
 
-    double interval = (AppConstants().springDifference *
-            AppConstants.scalingFactor) /
-        7.1; //show interval line every seven days, bunch of little rounding errors and the fact that years are 365.25 days long
-    //kinda culminates in the progress line being off relative week lines by a few pixels
+    final AppConstants constants = AppConstants();
+    final int totalDays = semester.toLowerCase() == 'spring'
+        ? constants.springDifference
+        : constants.autumnDifference;
 
-    for (double x = 0; x <= size.width; x += interval) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
-    }
+    //day lines
+    final dayPaint = Paint()
+      ..color = const Color.fromARGB(100, 201, 201, 201)
+      ..strokeWidth = 0.5;
 
-    if (true) {
-      final int springProgress = AppConstants().calculateSpringProgress();
-      final double autumnProgress = AppConstants().calculateAutumnProgress();
-      double progressX;
-      if (semester.toLowerCase() == 'spring') {
-        progressX =
-            springProgress / AppConstants().springDifference * size.width + 310;
-      } else {
-        progressX = autumnProgress * size.width;
+    for (int i = 0; i < totalDays + 10; i++) {
+      double x = leftOffset + (i / totalDays) * availableWidth;
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), dayPaint);
+
+      //week lines
+      if (i % 7 == 0) {
+        final paint = Paint()
+          ..color = const Color.fromARGB(255, 93, 93, 93)
+          ..strokeWidth = 1.0;
+        canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: intl.DateFormat.MMMd().format(
+              semester.toLowerCase() == 'spring'
+                  ? constants.springStartDate.add(Duration(days: i))
+                  : constants.autumnStartDate.add(Duration(days: i)),
+            ),
+            style: const TextStyle(color: Colors.black, fontSize: 10),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        textPainter.paint(canvas, Offset(x + 2, size.height - 12));
       }
-
-      final progressPaint = Paint()
-        ..color = const Color.fromARGB(255, 114, 0, 116)
-        ..strokeWidth = 2.0;
-
-      canvas.drawLine(Offset(progressX, -5), Offset(progressX, size.height + 5),
-          progressPaint);
     }
+
+//progress bar, this implementation does not consider time of the day //TODO: add?
+    final int springProgress = constants.calculateSpringProgress();
+    final int autumnProgress = constants.calculateAutumnProgress();
+    double progressX;
+
+    if (semester.toLowerCase() == 'spring') {
+      progressX = leftOffset + (springProgress / (totalDays)) * availableWidth;
+    } else {
+      progressX = leftOffset + (autumnProgress / (totalDays)) * availableWidth;
+    }
+
+    final progressPaint = Paint()
+      ..color = const Color.fromARGB(255, 114, 0, 116)
+      ..strokeWidth = 2.0;
+
+    canvas.drawLine(
+      Offset(progressX, -5),
+      Offset(progressX, size.height + 5),
+      progressPaint,
+    );
   }
 
   @override

@@ -9,7 +9,7 @@ import 'add_deadline_button.dart';
 class CourseCard extends StatefulWidget {
   final Course course;
 
-  CourseCard({required this.course});
+  const CourseCard({required this.course});
 
   @override
   _CourseCardState createState() => _CourseCardState();
@@ -71,9 +71,12 @@ class _CourseCardState extends State<CourseCard> {
               ? 120
               : (size.width < BreakPoints.medium)
                   ? 150
-                  : 300,
+                  : AppConstants.courseCardWidth,
           height: 80,
           child: InkWell(
+            hoverColor: Colors.blue.withValues(alpha: 0.2),
+            highlightColor: Colors.blue.withValues(alpha: 0.2),
+            splashColor: Colors.blue.withValues(alpha: 0.1),
             onTap: () {
               showDialog(
                 context: context,
@@ -150,7 +153,7 @@ class _CourseCardState extends State<CourseCard> {
 class CourseDialogContent extends StatefulWidget {
   final Course course;
 
-  CourseDialogContent({
+  const CourseDialogContent({
     required this.course,
   });
 
