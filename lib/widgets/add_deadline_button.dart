@@ -8,6 +8,7 @@ class AddDeadlineButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      tooltip: "Add Deadline",
       icon: Icon(Icons.add, size: 20.0),
       onPressed: () {
         showDialog(

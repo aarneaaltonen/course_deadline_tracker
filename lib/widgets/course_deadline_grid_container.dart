@@ -1,10 +1,10 @@
-import 'package:aalto_course_tracker/widgets/add_deadline_button.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../models/models.dart';
 import 'add_course_ button.dart';
 import 'course_card.dart';
+import 'course_card_lane.dart';
 import 'period_header.dart';
 
 class CourseDeadlineGridContainer extends StatelessWidget {
@@ -17,7 +17,6 @@ class CourseDeadlineGridContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Stack(
@@ -71,7 +70,7 @@ class CourseDeadlineGridContainer extends StatelessWidget {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       final course = courses[index];
-                      return CourseCard(course: course, semester: semester);
+                      return CourseCardLane(course: course, semester: semester);
                     },
                   ),
                 ],
@@ -81,34 +80,7 @@ class CourseDeadlineGridContainer extends StatelessWidget {
           Positioned(
               top: 56,
               child: Column(children: [
-                for (var course in courses)
-                  Card(
-                    color: Color(int.parse(course.color)),
-                    child: SizedBox(
-                      width: (size.width < BreakPoints.small)
-                          ? 80
-                          : (size.width < BreakPoints.medium)
-                              ? 150
-                              : 300,
-                      height: 80,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Text(
-                                course.name,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            Expanded(child: Container()),
-                            AddDeadlineButton(courseId: course.id),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                for (var course in courses) CourseCard(course: course),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Row(

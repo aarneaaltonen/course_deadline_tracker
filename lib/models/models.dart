@@ -36,7 +36,7 @@ class Course {
   final String id;
   final String semesterPlanId;
   final String name;
-  final String color;
+  final int color;
   final String? code;
   final List<Deadline> deadlines;
 
@@ -44,7 +44,7 @@ class Course {
     required this.id,
     required this.semesterPlanId,
     required this.name,
-    this.color = '0xFF90CAF9',
+    this.color = 0xFF93CEFF, // Light blue color
     this.code,
     required this.deadlines,
   });

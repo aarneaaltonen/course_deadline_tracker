@@ -48,4 +48,15 @@ class CourseController {
         .where((course) => course.semesterPlanId == semesterPlanId)
         .toList();
   }
+
+  void deleteCourse(String id) {
+    courses.removeWhere((course) => course.id == id);
+    _save();
+  }
+
+  void updateCourse(Course course) {
+    final index = courses.indexWhere((c) => c.id == course.id);
+    courses[index] = course;
+    _save();
+  }
 }

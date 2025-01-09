@@ -1,90 +1,244 @@
+import 'package:aalto_course_tracker/controllers/courses_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 import '../constants.dart';
 import '../models/models.dart';
 import 'add_deadline_button.dart';
 
-class CourseCard extends StatelessWidget {
+class CourseCard extends StatefulWidget {
   final Course course;
-  final String semester;
 
-  CourseCard({required this.course, required this.semester});
+  CourseCard({required this.course});
+
+  @override
+  _CourseCardState createState() => _CourseCardState();
+}
+
+class _CourseCardState extends State<CourseCard> {
+  bool _isPressed = false;
+  final controller = Get.find<CourseController>();
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 10.0,
-      child: Row(
-        children: [
-          SizedBox(
-            width: AppConstants().springDifference *
-                    AppConstants.scalingFactor *
-                    (semester.toLowerCase() == 'autumn' ? 2 : 3) +
-                300,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.white, Colors.blue.shade50],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+    final size = MediaQuery.of(context).size;
+
+    return GestureDetector(
+      onTapDown: (_) {
+        setState(() {
+          _isPressed = true;
+        });
+      },
+      onTapUp: (_) {
+        setState(() {
+          _isPressed = false;
+        });
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(widget.course.name),
+              content: Text('Details about the course: ${widget.course.name}'),
+              actions: [
+                TextButton(
+                  child: Text('Close'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
+              ],
+            );
+          },
+        );
+      },
+      onTapCancel: () {
+        setState(() {
+          _isPressed = false;
+        });
+      },
+      child: Card(
+        color: Color(widget.course.color),
+        shape: _isPressed
+            ? RoundedRectangleBorder(
+                side: BorderSide(color: Colors.blue, width: 2.0),
+                borderRadius: BorderRadius.circular(5.0),
+              )
+            : RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
               ),
-              child: SizedBox(
-                height: 80,
-                child: CustomPaint(
-                  painter: GridPainter(semester: semester),
-                  child: Container(), // Empty container to provide size
-                ),
+        child: SizedBox(
+          width: (size.width < BreakPoints.small)
+              ? 120
+              : (size.width < BreakPoints.medium)
+                  ? 150
+                  : 300,
+          height: 80,
+          child: InkWell(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Row(
+                      children: [
+                        Text(widget.course.name),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          tooltip: 'Delete Course',
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Delete Course'),
+                                    content: Text(
+                                        'Are you sure you want to delete this course?'),
+                                    actions: [
+                                      TextButton(
+                                        child: Text('Cancel'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      ElevatedButton(
+                                        child: Text('Delete'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          controller
+                                              .deleteCourse(widget.course.id);
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        ),
+                        Expanded(child: Container()),
+                        AddDeadlineButton(courseId: widget.course.id),
+                      ],
+                    ),
+                    content: CourseDialogContent(course: widget.course),
+                  );
+                },
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Text(
+                      widget.course.name,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  Expanded(child: Container()),
+                  if (size.width > BreakPoints.small)
+                    AddDeadlineButton(courseId: widget.course.id),
+                ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class GridPainter extends CustomPainter {
-  //draws week lines and progress line
-  final String semester;
+class CourseDialogContent extends StatefulWidget {
+  final Course course;
 
-  GridPainter({required this.semester});
+  CourseDialogContent({
+    required this.course,
+  });
+
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color.fromARGB(255, 201, 201, 201)
-      ..strokeWidth = 1.0;
+  _CourseDialogContentState createState() => _CourseDialogContentState();
+}
 
-    double interval = (AppConstants().springDifference *
-            AppConstants.scalingFactor) /
-        7.1; //show interval line every seven days, bunch of little rounding errors and the fact that years are 365.25 days long
-    //kinda culminates in the progress line being off relative week lines by a few pixels
+class _CourseDialogContentState extends State<CourseDialogContent> {
+  final controller = Get.find<CourseController>();
+  Color _selectedColor = Colors.white;
 
-    for (double x = 0; x <= size.width; x += interval) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
-    }
+  void _updateCourse() {
+    final updatedCourse = Course(
+      id: widget.course.id,
+      name: widget.course.name,
+      semesterPlanId: widget.course.semesterPlanId,
+      deadlines: widget.course.deadlines,
+      color: _selectedColor.value,
+    );
 
-    if (true) {
-      final int springProgress = AppConstants().calculateSpringProgress();
-      final double autumnProgress = AppConstants().calculateAutumnProgress();
-      double progressX;
-      if (semester.toLowerCase() == 'spring') {
-        progressX =
-            springProgress / AppConstants().springDifference * size.width + 310;
-      } else {
-        progressX = autumnProgress * size.width;
-      }
-
-      final progressPaint = Paint()
-        ..color = const Color.fromARGB(255, 114, 0, 116)
-        ..strokeWidth = 2.0;
-
-      canvas.drawLine(Offset(progressX, -5), Offset(progressX, size.height + 5),
-          progressPaint);
-    }
+    controller.updateCourse(updatedCourse);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+  void initState() {
+    super.initState();
+    _selectedColor = Color(widget.course.color);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildColorOption(const Color.fromARGB(255, 254, 156, 149)),
+            _buildColorOption(const Color.fromARGB(255, 149, 252, 153)),
+            _buildColorOption(const Color.fromARGB(255, 147, 206, 255)),
+            _buildColorOption(const Color.fromARGB(255, 232, 222, 131)),
+            _buildColorOption(const Color.fromARGB(255, 230, 143, 245)),
+            _buildColorOption(const Color.fromARGB(255, 245, 184, 143)),
+          ],
+        ),
+        SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _updateCourse();
+                Navigator.of(context).pop();
+              },
+              child: Text('Save'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildColorOption(Color color) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedColor = color;
+        });
+      },
+      child: Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          color: color,
+          border: Border.all(
+            color: _selectedColor == color ? Colors.black : Colors.transparent,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+    );
   }
 }
