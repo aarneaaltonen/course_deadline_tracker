@@ -76,7 +76,12 @@ class CourseDeadlineGridContainer extends StatelessWidget {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       final course = courses[index];
-                      return CourseCardLane(course: course, semester: semester);
+                      final last = index == courses.length - 1;
+                      return CourseCardLane(
+                          course: course,
+                          semester: semester,
+                          index: index,
+                          last: last);
                     },
                   ),
                 ],
