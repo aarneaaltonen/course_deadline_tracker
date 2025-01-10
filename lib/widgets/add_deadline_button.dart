@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/deadline_controller.dart';
 
 class AddDeadlineButton extends StatelessWidget {
   final String courseId;
+  final DeadlineController deadlineController = Get.find<DeadlineController>();
 
   AddDeadlineButton({required this.courseId});
 
@@ -14,22 +17,23 @@ class AddDeadlineButton extends StatelessWidget {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            final _formKey = GlobalKey<FormState>();
-            final _descriptionController = TextEditingController();
-            DateTime? _selectedDate;
-            TimeOfDay? _selectedTime;
+            final formKey = GlobalKey<FormState>();
+            final descriptionController = TextEditingController();
+            DateTime? selectedDate;
+            TimeOfDay? selectedTime;
+            String? dateError;
 
             return StatefulBuilder(
               builder: (context, setState) {
                 return AlertDialog(
                   title: Text('Add Deadline'),
                   content: Form(
-                    key: _formKey,
+                    key: formKey,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         TextFormField(
-                          controller: _descriptionController,
+                          controller: descriptionController,
                           decoration: InputDecoration(labelText: 'Description'),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -41,23 +45,30 @@ class AddDeadlineButton extends StatelessWidget {
                         SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () async {
-                            _selectedDate = await showDatePicker(
+                            selectedDate = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime(2000),
                               lastDate: DateTime(2101),
                             );
-                            setState(() {});
+                            setState(() {
+                              dateError = null; // Clear any previous error
+                            });
                           },
                           child: Text('Select Date'),
                         ),
-                        if (_selectedDate != null)
+                        if (selectedDate != null)
                           Text(
-                              'Selected date: ${_selectedDate!.toLocal().toString().split(' ')[0]}'),
+                              'Selected date: ${selectedDate!.toLocal().toString().split(' ')[0]}'),
+                        if (dateError != null)
+                          Text(
+                            dateError!,
+                            style: TextStyle(color: Colors.red),
+                          ),
                         SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () async {
-                            _selectedTime = await showTimePicker(
+                            selectedTime = await showTimePicker(
                               context: context,
                               initialTime: TimeOfDay.now(),
                               builder: (BuildContext context, Widget? child) {
@@ -72,9 +83,9 @@ class AddDeadlineButton extends StatelessWidget {
                           },
                           child: Text('Select Time'),
                         ),
-                        if (_selectedTime != null)
+                        if (selectedTime != null)
                           Text(
-                              'Selected time: ${_selectedTime!.format(context)}'),
+                              'Selected time: ${selectedTime!.format(context)}'),
                       ],
                     ),
                   ),
@@ -88,11 +99,21 @@ class AddDeadlineButton extends StatelessWidget {
                     TextButton(
                       child: Text('Save'),
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          // Save the deadline information
-                          print('Selected date: $_selectedDate');
-                          print('Selected time: $_selectedTime');
-                          Navigator.of(context).pop();
+                        if (formKey.currentState!.validate()) {
+                          if (selectedDate == null) {
+                            setState(() {
+                              dateError = 'Please select a date';
+                            });
+                          } else {
+                            // Save the deadline information
+                            deadlineController.addDeadline(
+                              courseId,
+                              selectedDate!,
+                              selectedTime,
+                              descriptionController.text,
+                            );
+                            Navigator.of(context).pop();
+                          }
                         }
                       },
                     ),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'controllers/deadline_controller.dart';
 import 'pages/home_page.dart';
 import 'pages/planner_page.dart';
 
@@ -13,6 +14,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox('storage');
   await dotenv.load(fileName: ".env");
+  Get.put<DeadlineController>(DeadlineController());
   Get.put<CourseController>(CourseController());
   Get.put<SemesterPlanController>(SemesterPlanController());
   runApp(const MyApp());

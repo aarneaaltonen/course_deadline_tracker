@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../constants.dart';
+import '../controllers/deadline_controller.dart';
 import '../models/models.dart';
 import 'add_course_ button.dart';
 import 'course_card.dart';
@@ -75,13 +77,23 @@ class CourseDeadlineGridContainer extends StatelessWidget {
                     itemCount: courses.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
+                      final DeadlineController deadlineController =
+                          Get.find<DeadlineController>();
                       final course = courses[index];
-                      final last = index == courses.length - 1;
-                      return CourseCardLane(
+                      return Obx(() {
+                        final deadlines = deadlineController
+                            .fetchDeadlinesForCourse(course.id)
+                            .where((deadline) => deadline.courseId == course.id)
+                            .toList();
+                        final last = index == courses.length - 1;
+                        return CourseCardLane(
                           course: course,
                           semester: semester,
                           index: index,
-                          last: last);
+                          last: last,
+                          deadlines: deadlines,
+                        );
+                      });
                     },
                   ),
                 ],

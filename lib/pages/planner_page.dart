@@ -1,3 +1,4 @@
+import 'package:aalto_course_tracker/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -21,28 +22,17 @@ class PlanPage extends StatelessWidget {
     final planData = planController.getPlanById(id);
     if (planData != null) {
       //TODO: make util for calculating progress
-      final int springProgress = AppConstants().calculateSpringProgress();
-      final int autumnProgress = AppConstants().calculateAutumnProgress();
-      const double leftOffset = AppConstants.courseCardWidth;
+      final DateTime today = DateTime.now();
+
       final double size = AppConstants().springDifference *
               AppConstants.scalingFactor *
               (planData.semester.toLowerCase() == 'autumn' ? 2 : 3) +
-          leftOffset; //might make a callback for this, requires semester info
+          AppConstants
+              .calendarTailWidth; //size should really be calculate somewhere consistent, needs semester data though
 
-      final double availableWidth = size - leftOffset;
-      final AppConstants constants = AppConstants();
-      final int totalDays = planData.semester.toLowerCase() == 'spring'
-          ? constants.springDifference
-          : constants.autumnDifference;
-      double progressX;
+      double progressX = HelperFunctions()
+          .calculateLeftPosition(today, size, planData.semester);
 
-      if (planData.semester.toLowerCase() == 'spring') {
-        progressX =
-            leftOffset + (springProgress / (totalDays)) * availableWidth;
-      } else {
-        progressX =
-            leftOffset + (autumnProgress / (totalDays)) * availableWidth;
-      }
       if (scrollController.hasClients) {
         double cardProgress;
         final screenWidth = MediaQuery.of(Get.context!).size.width;

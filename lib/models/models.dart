@@ -77,7 +77,6 @@ class Course {
 class Deadline {
   final String id;
   final String courseId;
-  final String name;
   final String description;
   final DateTime dueDate;
   final bool isCompleted;
@@ -85,7 +84,6 @@ class Deadline {
   Deadline({
     required this.id,
     required this.courseId,
-    required this.name,
     required this.description,
     required this.dueDate,
     this.isCompleted = false,
@@ -94,7 +92,6 @@ class Deadline {
   Map toJson() {
     return {
       'id': id,
-      'name': name,
       'courseId': courseId,
       'description': description,
       'dueDate': dueDate.toIso8601String(),
@@ -106,7 +103,6 @@ class Deadline {
     return Deadline(
       id: json['id'],
       courseId: json['courseId'],
-      name: json['name'],
       description: json['description'],
       dueDate: DateTime.parse(json['dueDate']),
       isCompleted: json['isCompleted'],
