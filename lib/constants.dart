@@ -1,5 +1,5 @@
 class AppConstants {
-  static const double scalingFactor = 12;
+  static const double scalingFactor = 55;
   static const double courseCardWidth = 300;
   static const double calendarTailWidth = 1000;
   static final double deadlineCardWidth = 15 * scalingFactor;

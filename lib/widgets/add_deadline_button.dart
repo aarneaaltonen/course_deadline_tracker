@@ -5,6 +5,7 @@ import '../controllers/deadline_controller.dart';
 class AddDeadlineButton extends StatelessWidget {
   final String courseId;
   final DeadlineController deadlineController = Get.find<DeadlineController>();
+  final FocusNode _focusNode = FocusNode();
 
   AddDeadlineButton({required this.courseId});
 
@@ -23,6 +24,11 @@ class AddDeadlineButton extends StatelessWidget {
             TimeOfDay? selectedTime;
             String? dateError;
 
+            // Request focus after the dialog is built
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _focusNode.requestFocus();
+            });
+
             return StatefulBuilder(
               builder: (context, setState) {
                 return AlertDialog(
@@ -34,6 +40,7 @@ class AddDeadlineButton extends StatelessWidget {
                       children: [
                         TextFormField(
                           controller: descriptionController,
+                          focusNode: _focusNode, // Assign the focus node here
                           decoration: InputDecoration(labelText: 'Description'),
                           validator: (value) {
                             if (value == null || value.isEmpty) {

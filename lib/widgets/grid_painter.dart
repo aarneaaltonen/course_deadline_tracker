@@ -14,21 +14,10 @@ class ProgressBarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final double availableWidth = size.width - AppConstants.calendarTailWidth;
-
-    final AppConstants constants = AppConstants();
-    final int totalDays = semester.toLowerCase() == 'spring'
-        ? constants.springDifference
-        : constants.autumnDifference;
-
     //progress bar
     final DateTime now = DateTime.now();
     double progressX =
         HelperFunctions().calculateLeftPosition(now, size.width, semester);
-
-    final int currentHour = now.hour;
-    final double hourProgress = currentHour / 24;
-    progressX += (hourProgress / totalDays) * availableWidth;
 
     final progressPaint = Paint()
       ..color = const Color.fromARGB(255, 0, 0, 0)
@@ -47,6 +36,17 @@ class ProgressBarPainter extends CustomPainter {
         ..close();
 
       canvas.drawPath(trianglePath, progressPaint);
+
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: intl.DateFormat('dd.M').format(
+            DateTime.now(),
+          ),
+          style: const TextStyle(color: Colors.black, fontSize: 10),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      textPainter.paint(canvas, Offset(progressX - 10, size.height + 12));
     }
     if (index == 0) {
       final Path trianglePath = Path()

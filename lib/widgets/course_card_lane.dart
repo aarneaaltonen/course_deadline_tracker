@@ -86,9 +86,7 @@ class CourseCardLane extends StatelessWidget {
     for (var deadline in deadlines) {
       // Calculate the left position of the deadline
       double leftPosition = HelperFunctions().calculateLeftPosition(
-        deadline.dueDate.add(Duration(
-            days:
-                1)), //add one day since "deadline" is usually concidered the last day
+        deadline.dueDate,
         AppConstants().springDifference *
                 AppConstants.scalingFactor *
                 (semester.toLowerCase() == 'autumn' ? 2 : 3) +
@@ -96,7 +94,7 @@ class CourseCardLane extends StatelessWidget {
         semester,
       );
 
-      // Find the first available row
+      // finds the last available row, or picks the row with the furthest last deadline to show the card as much as possible
       int selectedRow = 0;
       for (int row = 0; row < rowHeights.length; row++) {
         if (!occupiedRows.containsKey(row) ||
@@ -105,9 +103,14 @@ class CourseCardLane extends StatelessWidget {
           selectedRow = row;
           break;
         }
+        if (row == rowHeights.length - 1) {
+          final int rowWithFurthestLastDeadline = occupiedRows.entries
+              .reduce((a, b) => a.value < b.value ? a : b)
+              .key;
+          selectedRow = rowWithFurthestLastDeadline;
+        }
       }
 
-      // Add the DeadlineCard to the selected row
       deadlineWidgets.add(
         Positioned(
           top: rowHeights[selectedRow],
@@ -119,7 +122,6 @@ class CourseCardLane extends StatelessWidget {
         ),
       );
 
-      // Mark the row as occupied at this position
       occupiedRows[selectedRow] = leftPosition;
     }
 

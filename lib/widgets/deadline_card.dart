@@ -10,6 +10,19 @@ class DeadlineCard extends StatelessWidget {
 
   DeadlineCard({required this.deadline});
 
+  Color getDeadlineColor() {
+    if (deadline.isCompleted) {
+      return Colors.green;
+    } else if (deadline.dueDate.isBefore(DateTime.now())) {
+      return Colors.red;
+    } else if (deadline.dueDate
+        .isBefore(DateTime.now().add(Duration(days: 5)))) {
+      return const Color.fromARGB(255, 255, 190, 93);
+    } else {
+      return Color.fromARGB(255, 121, 215, 249);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -33,7 +46,7 @@ class DeadlineCard extends StatelessWidget {
           );
         },
         child: Card(
-          color: const Color.fromARGB(255, 121, 215, 249),
+          color: getDeadlineColor(),
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4.0),

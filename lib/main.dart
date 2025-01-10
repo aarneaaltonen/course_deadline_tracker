@@ -35,6 +35,8 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 58, 156, 183)),
         useMaterial3: true,
       ),
+      darkTheme: ThemeData.dark(),
+      // themeMode: ThemeMode.dark,
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => HomePage()),

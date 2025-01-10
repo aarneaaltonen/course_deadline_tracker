@@ -5,11 +5,11 @@ import 'package:get/get.dart';
 
 import '../controllers/courses_controller.dart';
 
-//might use an api to find the courses, for now seems overkill
 class AddCourseButton extends StatelessWidget {
   static final _formKey = GlobalKey<FormBuilderState>();
   final String semesterPlanId;
   final coursesController = Get.find<CourseController>();
+  final FocusNode _focusNode = FocusNode();
 
   AddCourseButton({required this.semesterPlanId});
 
@@ -20,38 +20,45 @@ class AddCourseButton extends StatelessWidget {
         showDialog(
           context: context,
           builder: (BuildContext context) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _focusNode.requestFocus();
+            });
+
             return AlertDialog(
-                title: Text('Add Course'),
-                content: FormBuilder(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      FormBuilderTextField(
-                        name: 'course_name',
-                        decoration: InputDecoration(
-                          labelText: 'Course Name',
-                        ),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
+              title: Text('Add Course'),
+              content: FormBuilder(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    FormBuilderTextField(
+                      name: 'course_name',
+                      focusNode: _focusNode,
+                      decoration: InputDecoration(
+                        labelText: 'Course Name',
                       ),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.saveAndValidate()) {
-                            _formKey.currentState?.reset();
-                            coursesController.addCourse(
-                                _formKey.currentState?.value['course_name'],
-                                semesterPlanId);
-                            Navigator.of(context).pop();
-                          }
-                        },
-                        child: Text('Submit'),
-                      ),
-                    ],
-                  ),
-                ));
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                      ]),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.saveAndValidate()) {
+                          _formKey.currentState?.reset();
+                          coursesController.addCourse(
+                            _formKey.currentState?.value['course_name'],
+                            semesterPlanId,
+                          );
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: Text('Submit'),
+                    ),
+                  ],
+                ),
+              ),
+            );
           },
         );
       },
