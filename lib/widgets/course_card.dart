@@ -37,7 +37,10 @@ class _CourseCardState extends State<CourseCard> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text(widget.course.name),
+              title: Text(
+                widget.course.name,
+                overflow: TextOverflow.ellipsis,
+              ),
               content: Text('Details about the course: ${widget.course.name}'),
               actions: [
                 TextButton(
@@ -84,7 +87,6 @@ class _CourseCardState extends State<CourseCard> {
                   return AlertDialog(
                     title: Row(
                       children: [
-                        Text(widget.course.name),
                         IconButton(
                           icon: Icon(Icons.delete, color: Colors.red),
                           tooltip: 'Delete Course',
@@ -117,7 +119,12 @@ class _CourseCardState extends State<CourseCard> {
                                 });
                           },
                         ),
-                        Expanded(child: Container()),
+                        Expanded(
+                          child: Text(
+                            widget.course.name,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                         AddDeadlineButton(courseId: widget.course.id),
                       ],
                     ),
@@ -128,19 +135,31 @@ class _CourseCardState extends State<CourseCard> {
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Text(
-                      widget.course.name,
-                      style: TextStyle(color: Colors.white),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        widget.course.name,
+                        style: TextStyle(color: Colors.white, fontSize: 15),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
                     ),
-                  ),
-                  Expanded(child: Container()),
-                  if (size.width > BreakPoints.small)
-                    AddDeadlineButton(courseId: widget.course.id),
-                ],
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        child: size.width > BreakPoints.small
+                            ? AddDeadlineButton(courseId: widget.course.id)
+                            : Container(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

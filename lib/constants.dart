@@ -1,7 +1,8 @@
 class AppConstants {
-  static const double scalingFactor = 4;
+  static const double scalingFactor = 12;
   static const double courseCardWidth = 300;
   static const double calendarTailWidth = 1000;
+  static final double deadlineCardWidth = 15 * scalingFactor;
 
   final DateTime springStartDate = DateTime(2025, 1, 6);
   final DateTime springEndDate = DateTime(2025, 6, 7);

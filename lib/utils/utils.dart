@@ -22,7 +22,6 @@ class HelperFunctions {
     // Calculate the available width for the grid
     final double availableWidth = widgetWidth - AppConstants.calendarTailWidth;
 
-    // Scale the difference in days to the available width
     final double scaledPosition =
         leftOffset + (daysDifference / totalDays) * availableWidth;
 
