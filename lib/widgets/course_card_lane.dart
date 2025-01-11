@@ -96,10 +96,12 @@ class CourseCardLane extends StatelessWidget {
 
       // finds the last available row, or picks the row with the furthest last deadline to show the card as much as possible
       int selectedRow = 0;
+      double deadlineWidth = semester.toLowerCase() == 'spring'
+          ? AppConstants.springDeadlineCardWidth
+          : AppConstants.autumnDeadlineCardWidth;
       for (int row = 0; row < rowHeights.length; row++) {
         if (!occupiedRows.containsKey(row) ||
-            leftPosition - (occupiedRows[row] ?? 0) >=
-                AppConstants.deadlineCardWidth) {
+            leftPosition - (occupiedRows[row] ?? 0) >= deadlineWidth) {
           selectedRow = row;
           break;
         }
@@ -114,10 +116,13 @@ class CourseCardLane extends StatelessWidget {
       deadlineWidgets.add(
         Positioned(
           top: rowHeights[selectedRow],
-          left: leftPosition - AppConstants.deadlineCardWidth,
+          left: leftPosition -
+              (semester.toLowerCase() == 'spring'
+                  ? AppConstants.springDeadlineCardWidth
+                  : AppConstants.autumnDeadlineCardWidth),
           child: SizedBox(
             height: 30,
-            child: DeadlineCard(deadline: deadline),
+            child: DeadlineCard(deadline: deadline, semester: semester),
           ),
         ),
       );

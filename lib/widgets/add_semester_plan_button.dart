@@ -76,7 +76,7 @@ class AddSemesterPlanButton extends StatelessWidget {
                     if (_formKey.currentState?.saveAndValidate() ?? false) {
                       final title = _formKey.currentState?.value['title'];
                       final semester = controller.isSelected.indexOf(true);
-                      final semesterName = semester == 0 ? 'Spring' : 'Autumn';
+                      final semesterName = semester == 0 ? 'spring' : 'autumn';
                       planController.addPlan(title, semesterName);
 
                       Navigator.of(context).pop();

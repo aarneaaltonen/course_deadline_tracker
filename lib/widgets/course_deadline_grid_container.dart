@@ -157,9 +157,9 @@ class EditButton extends StatelessWidget {
                       const SizedBox(height: 16.0),
                       Slider(
                         value: scaleFactor,
-                        min: 1,
-                        max: 20,
-                        divisions: 19,
+                        min: 3,
+                        max: 25,
+                        divisions: 22,
                         label: '${scaleFactor.round()}',
                         onChanged: (double value) {
                           setState(() {

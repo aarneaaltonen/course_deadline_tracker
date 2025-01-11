@@ -9,22 +9,29 @@ class AppConstants {
 
   static const double courseCardWidth = 300;
   static const double calendarTailWidth = 1000;
-  static double get deadlineCardWidth => 15 * scalingFactor;
+
+  static double get springDeadlineCardWidth => 14.99 * scalingFactor;
+  static double get autumnDeadlineCardWidth =>
+      13.69 *
+      scalingFactor; //these are silly, should really find a consistent way to calculate them based on a single width
+  //right now no easy way to change the width of the cards to conform to a "danger zone" day amount
+  //i've been eyeballing it an adding evil magic numbers for it to look right (and not collide easily in y-positioning algorithm) >:)
 
   final DateTime springStartDate = DateTime(2025, 1, 6);
   final DateTime springEndDate = DateTime(2025, 6, 7);
   late final int springDifference;
   late final double periodHeaderWidth;
-
   final DateTime autumnStartDate = DateTime(2025, 8, 25);
   final DateTime autumnEndDate = DateTime(2025, 12, 14);
   late final int autumnDifference;
   late final double autumnPeriodHeaderWidth;
 
   AppConstants() {
+    // Initialize the spring and autumn differences
     springDifference = daysBetween(springStartDate, springEndDate);
-    periodHeaderWidth = scalingFactor * springDifference;
     autumnDifference = daysBetween(autumnStartDate, autumnEndDate);
+    // Initialize period header widths
+    periodHeaderWidth = scalingFactor * springDifference;
     autumnPeriodHeaderWidth = scalingFactor * autumnDifference;
   }
 
