@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aalto_course_tracker/controllers/courses_controller.dart';
+import 'package:aalto_course_tracker/controllers/scale_factor_controller.dart';
 import 'package:aalto_course_tracker/controllers/semester_plan_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -14,6 +15,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox('storage');
   await dotenv.load(fileName: ".env");
+  Get.put<ScaleFactorController>(ScaleFactorController());
   Get.put<DeadlineController>(DeadlineController());
   Get.put<CourseController>(CourseController());
   Get.put<SemesterPlanController>(SemesterPlanController());
@@ -35,7 +37,9 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 58, 156, 183)),
         useMaterial3: true,
       ),
-      darkTheme: ThemeData.dark(),
+      darkTheme: ThemeData.dark(
+        useMaterial3: true,
+      ),
       // themeMode: ThemeMode.dark,
       initialRoute: '/',
       getPages: [

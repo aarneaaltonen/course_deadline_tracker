@@ -5,12 +5,14 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import '../controllers/semester_plan_controller.dart';
 
 class AddSemesterPlanButton extends StatelessWidget {
+  AddSemesterPlanButton({Key? key}) : super(key: key);
+
   static final _formKey = GlobalKey<FormBuilderState>();
-  final planController = Get.find<SemesterPlanController>();
+  final SemesterPlanController planController =
+      Get.find<SemesterPlanController>();
 
   @override
   Widget build(BuildContext context) {
-    //dont think wee need to inverse control here, form state controller used only here
     final SemesterPlanFormController controller =
         Get.put(SemesterPlanFormController());
 
@@ -20,7 +22,7 @@ class AddSemesterPlanButton extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Create Semester Plan'),
+              title: const Text('Create Semester Plan'),
               content: SingleChildScrollView(
                 child: FormBuilder(
                   key: _formKey,
@@ -28,65 +30,59 @@ class AddSemesterPlanButton extends StatelessWidget {
                     children: [
                       FormBuilderTextField(
                         name: 'title',
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Title',
                         ),
-                        autovalidateMode: AutovalidateMode.always,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: FormBuilderValidators.compose([
                           FormBuilderValidators.required(),
                         ]),
                       ),
-                      SizedBox(height: 16.0),
-                      Text('Select Semester:'),
-                      SizedBox(height: 8.0),
-                      FormBuilderField(
-                        name: 'semester',
-                        initialValue: controller.isSelected.indexOf(true),
-                        builder: (FormFieldState<int> field) {
-                          return Obx(() => ToggleButtons(
-                                isSelected: controller.isSelected,
-                                onPressed: (int index) {
-                                  controller.toggleSelection(index);
-                                  field.didChange(index);
-                                },
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0),
-                                    child: Text('Spring'),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0),
-                                    child: Text('Autumn'),
-                                  ),
-                                ],
-                              ));
-                        },
-                      ),
+                      const SizedBox(height: 16.0),
+                      const Text('Select Semester:'),
+                      const SizedBox(height: 8.0),
+                      Obx(() => SegmentedButton<int>(
+                            segments: const <ButtonSegment<int>>[
+                              ButtonSegment(
+                                value: 0,
+                                label: Text('Spring'),
+                              ),
+                              ButtonSegment(
+                                value: 1,
+                                label: Text('Autumn'),
+                              ),
+                            ],
+                            selected: {controller.isSelected.indexOf(true)},
+                            onSelectionChanged: (Set<int> newSelection) {
+                              if (newSelection.isNotEmpty) {
+                                controller.toggleSelection(newSelection.first);
+                              }
+                            },
+                          )),
                     ],
                   ),
                 ),
               ),
               actions: <Widget>[
                 TextButton(
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
-                ElevatedButton(
-                  child: Text('Create'),
+                TextButton(
+                  child: const Text('Save'),
                   onPressed: () {
                     if (_formKey.currentState?.saveAndValidate() ?? false) {
-                      planController.addPlan(
-                        _formKey.currentState?.fields['title']?.value,
-                        controller.isSelected.indexOf(true) == 0
-                            ? 'Spring'
-                            : 'Autumn',
-                      );
-                      _formKey.currentState?.reset();
+                      final title = _formKey.currentState?.value['title'];
+                      final semester = controller.isSelected.indexOf(true);
+                      final semesterName = semester == 0 ? 'Spring' : 'Autumn';
+                      planController.addPlan(title, semesterName);
+
                       Navigator.of(context).pop();
+                    } else {
+                      Get.snackbar(
+                          'Error', 'Please fill all fields correctly.');
                     }
                   },
                 ),

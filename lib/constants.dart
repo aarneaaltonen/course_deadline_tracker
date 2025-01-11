@@ -1,8 +1,15 @@
+import 'package:get/get.dart';
+import '../controllers/scale_factor_controller.dart';
+
 class AppConstants {
-  static const double scalingFactor = 55;
+  static double get scalingFactor {
+    final scaleFactorController = Get.find<ScaleFactorController>();
+    return scaleFactorController.scaleFactor.value.toDouble();
+  }
+
   static const double courseCardWidth = 300;
   static const double calendarTailWidth = 1000;
-  static final double deadlineCardWidth = 15 * scalingFactor;
+  static double get deadlineCardWidth => 15 * scalingFactor;
 
   final DateTime springStartDate = DateTime(2025, 1, 6);
   final DateTime springEndDate = DateTime(2025, 6, 7);

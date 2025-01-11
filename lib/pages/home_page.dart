@@ -69,6 +69,47 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
+              // Expanded(
+              //   flex: 2,
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(16.0),
+              //     child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: <Widget>[
+              //         Row(
+              //           children: [
+              //             Icon(
+              //               Icons.info_outline,
+              //               size: 28.0,
+              //               color: Theme.of(context).primaryColor,
+              //             ),
+              //             SizedBox(width: 8.0),
+              //             Text(
+              //               "Course deadline tracker",
+              //               style:
+              //                   TextStyle(fontSize: 16.0, color: Colors.grey),
+              //               overflow: TextOverflow.ellipsis,
+              //             ),
+              //           ],
+              //         ),
+              //         SizedBox(height: 8.0),
+              //         Text(
+              //           "Course Deadline Tracker is a lightweight tool to help you keep track of course deadlines.",
+              //           style: TextStyle(fontSize: 16.0, color: Colors.grey),
+              //         ),
+              //         Text(
+              //           "List your courses and add upcoming deadlines, which you can view in a calendar and easily manage.",
+              //           style: TextStyle(fontSize: 16.0, color: Colors.grey),
+              //         ),
+              //         Text(
+              //           "Start by creating a plan and choosing a semester.",
+              //           style: TextStyle(fontSize: 16.0, color: Colors.grey),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              // Expanded(flex: 1, child: Container())
             ],
           ),
         ],

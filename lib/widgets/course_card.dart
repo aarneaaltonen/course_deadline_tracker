@@ -6,6 +6,7 @@ import '../constants.dart';
 import '../models/models.dart';
 import 'add_deadline_button.dart';
 
+//these widgets were made with the help of ai, which is why they use stateful widgets instead of getx
 class CourseCard extends StatefulWidget {
   final Course course;
 

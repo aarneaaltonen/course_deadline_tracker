@@ -40,7 +40,10 @@ class PlanCard extends StatelessWidget {
             child: Stack(
               children: [
                 ListTile(
-                  title: Text(title),
+                  title: Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   subtitle: Text(semester),
                 ),
                 Positioned(
