@@ -5,7 +5,7 @@ import '../controllers/deadline_controller.dart';
 import '../models/models.dart';
 import '../utils/utils.dart';
 import 'deadline_card.dart';
-import 'grid_painter.dart';
+import '../painters/grid_painter.dart';
 
 class CourseCardLane extends StatelessWidget {
   final Course course;

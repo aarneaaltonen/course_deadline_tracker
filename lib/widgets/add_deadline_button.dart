@@ -40,8 +40,12 @@ class AddDeadlineButton extends StatelessWidget {
                       children: [
                         TextFormField(
                           controller: descriptionController,
+                          maxLines: 3,
                           focusNode: _focusNode, // Assign the focus node here
-                          decoration: InputDecoration(labelText: 'Description'),
+                          decoration: InputDecoration(
+                            labelText: 'Description',
+                            border: OutlineInputBorder(),
+                          ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a description';

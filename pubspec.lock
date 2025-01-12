@@ -224,6 +224,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
+  modal_side_sheet:
+    dependency: "direct main"
+    description:
+      name: modal_side_sheet
+      sha256: "10773fa7d6c5582056e5c9ff1e92e430872dac4f33c79a0f7ecf4ce19d4f7d68"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   path:
     dependency: transitive
     description:

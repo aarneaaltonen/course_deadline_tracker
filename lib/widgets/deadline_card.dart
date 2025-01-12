@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'package:aalto_course_tracker/widgets/deadline_info_content.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_side_sheet/modal_side_sheet.dart';
 
 import '../constants.dart';
 import '../models/models.dart';
+import '../painters/deadline_indicator_painter.dart';
 
 class DeadlineCard extends StatefulWidget {
   final Deadline deadline;
@@ -68,6 +71,7 @@ class _DeadlineCardState extends State<DeadlineCard> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Tooltip(
       message: getTimeLeftMessage(),
       decoration: ShapeDecoration(
@@ -95,7 +99,25 @@ class _DeadlineCardState extends State<DeadlineCard> {
         child: SizedBox(
           width: AppConstants().getDeadlineCardWidth(),
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              if (size.width > BreakPoints.medium) {
+                showModalSideSheet(
+                    //here just waiting for this to be implemented for flutter web
+                    context: context,
+                    barrierDismissible: true,
+                    barrierColor: const Color.fromARGB(9, 0, 0, 0),
+                    ignoreAppBar: false,
+                    width: size.width * 0.3,
+                    body: DeadlineInfoContent(deadline: widget.deadline));
+              } else {
+                showBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return DeadlineInfoContent(deadline: widget.deadline);
+                  },
+                );
+              }
+            },
             child: Column(
               children: [
                 // Move CustomPaint above the text
@@ -107,6 +129,7 @@ class _DeadlineCardState extends State<DeadlineCard> {
                 ),
                 Text(
                   widget.deadline.description,
+                  maxLines: 1,
                   style: TextStyle(fontSize: 13, color: Colors.white),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -116,40 +139,5 @@ class _DeadlineCardState extends State<DeadlineCard> {
         ),
       ),
     );
-  }
-}
-
-class DeadlineIndicatorPainter extends CustomPainter {
-  final Color color;
-
-  DeadlineIndicatorPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-
-    // Draw a downward-pointing triangle (representing the end of the deadline)
-    Path path = Path()
-      ..moveTo(size.width - 5, -3) // Start at left point
-      ..lineTo(size.width + 5, -3) // Right point
-      ..lineTo(size.width, 2) // Top point (tail of the arrow)
-      ..close();
-
-    canvas.drawPath(path, paint);
-
-    // Draw white border around the triangle
-    final borderPaint = Paint()
-      ..color = const Color.fromARGB(255, 255, 255, 255)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    canvas.drawPath(path, borderPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
   }
 }

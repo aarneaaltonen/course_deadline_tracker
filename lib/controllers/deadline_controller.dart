@@ -60,6 +60,12 @@ class DeadlineController {
     deadlines.removeWhere((deadline) => deadline.id == id);
     _save();
   }
+
+  void updateDeadline(Deadline deadline) {
+    final index = deadlines.indexWhere((d) => d.id == deadline.id);
+    deadlines[index] = deadline;
+    _save();
+  }
 }
 
 DateTime combineDateAndTime(DateTime date, TimeOfDay time) {
