@@ -21,14 +21,9 @@ class PlanPage extends StatelessWidget {
     final planController = Get.find<SemesterPlanController>();
     final planData = planController.getPlanById(id);
     if (planData != null) {
-      //TODO: make util for calculating progress
       final DateTime today = DateTime.now();
 
-      final double size = AppConstants().springDifference *
-              AppConstants.scalingFactor *
-              (planData.semester.toLowerCase() == 'autumn' ? 2 : 3) +
-          AppConstants
-              .calendarTailWidth; //size should really be calculate somewhere consistent, needs semester data though
+      final double size = AppConstants().getCalendarWidth(planData.semester);
 
       double progressX = HelperFunctions()
           .calculateLeftPosition(today, size, planData.semester);
@@ -42,7 +37,7 @@ class PlanPage extends StatelessWidget {
         } else if (screenWidth < BreakPoints.medium) {
           cardProgress = progressX - 250;
         } else {
-          cardProgress = progressX - 400;
+          cardProgress = progressX - 500;
         }
 
         scrollController.animateTo(
@@ -73,7 +68,10 @@ class PlanPage extends StatelessWidget {
                 Get.offAllNamed('/home');
               },
             ),
+            Spacer(),
             Text(planData!.name),
+            Spacer(),
+            EditButton(),
             IconButton(
               icon: Icon(Icons.format_list_bulleted,
                   color: const Color.fromARGB(255, 0, 0, 0)),

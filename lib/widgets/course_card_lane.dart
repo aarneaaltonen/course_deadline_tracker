@@ -29,10 +29,7 @@ class CourseCardLane extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: AppConstants().springDifference *
-                    AppConstants.scalingFactor *
-                    (semester.toLowerCase() == 'autumn' ? 2 : 3) +
-                AppConstants.calendarTailWidth,
+            width: AppConstants().getCalendarWidth(semester),
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -87,18 +84,13 @@ class CourseCardLane extends StatelessWidget {
       // Calculate the left position of the deadline
       double leftPosition = HelperFunctions().calculateLeftPosition(
         deadline.dueDate,
-        AppConstants().springDifference *
-                AppConstants.scalingFactor *
-                (semester.toLowerCase() == 'autumn' ? 2 : 3) +
-            AppConstants.calendarTailWidth,
+        AppConstants().getCalendarWidth(semester),
         semester,
       );
 
       // finds the last available row, or picks the row with the furthest last deadline to show the card as much as possible
       int selectedRow = 0;
-      double deadlineWidth = semester.toLowerCase() == 'spring'
-          ? AppConstants.springDeadlineCardWidth
-          : AppConstants.autumnDeadlineCardWidth;
+      double deadlineWidth = AppConstants().getDeadlineCardWidth();
       for (int row = 0; row < rowHeights.length; row++) {
         if (!occupiedRows.containsKey(row) ||
             leftPosition - (occupiedRows[row] ?? 0) >= deadlineWidth) {
@@ -117,9 +109,7 @@ class CourseCardLane extends StatelessWidget {
         Positioned(
           top: rowHeights[selectedRow],
           left: leftPosition -
-              (semester.toLowerCase() == 'spring'
-                  ? AppConstants.springDeadlineCardWidth
-                  : AppConstants.autumnDeadlineCardWidth),
+              (deadlineWidth + 5), //TODO: find out why +5 is needed
           child: SizedBox(
             height: 30,
             child: DeadlineCard(deadline: deadline, semester: semester),

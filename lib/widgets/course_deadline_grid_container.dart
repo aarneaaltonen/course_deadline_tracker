@@ -5,7 +5,7 @@ import '../constants.dart';
 import '../controllers/deadline_controller.dart';
 import '../controllers/scale_factor_controller.dart';
 import '../models/models.dart';
-import 'add_course_ button.dart';
+import 'add_course_button.dart';
 
 import 'course_card.dart';
 import 'course_card_lane.dart';
@@ -36,14 +36,8 @@ class CourseDeadlineGridContainer extends StatelessWidget {
             controller: scrollController,
             scrollDirection: Axis.horizontal,
             child: Obx(() {
-              double scaleFactor =
-                  scaleFactorController.scaleFactor.value.toDouble();
               return SizedBox(
-                width: AppConstants().springDifference *
-                        scaleFactor *
-                        (semester.toLowerCase() == 'autumn' ? 2 : 3) +
-                    AppConstants.calendarTailWidth +
-                    10,
+                width: AppConstants().getCalendarWidth(semester) + 10,
                 child: Column(
                   children: [
                     Row(
@@ -60,15 +54,39 @@ class CourseDeadlineGridContainer extends StatelessWidget {
                         ),
                         if (courses.isNotEmpty)
                           if (semester.toLowerCase() == 'spring') ...[
-                            PeriodHeader(periodText: 'III'),
-                            SizedBox(width: 5),
-                            PeriodHeader(periodText: 'IV'),
-                            SizedBox(width: 5),
-                            PeriodHeader(periodText: 'V'),
+                            PeriodHeader(
+                                periodText: 'III',
+                                startDate: AppConstants().thirdPeriodStartDate,
+                                endDate: AppConstants().thirdPeriodEndDate),
+                            SizedBox(
+                                width: AppConstants.scalingFactor *
+                                    AppConstants.dayWidth /
+                                    2),
+                            PeriodHeader(
+                                periodText: 'IV',
+                                startDate: AppConstants().fourthPeriodStartDate,
+                                endDate: AppConstants().fourthPeriodEndDate),
+                            SizedBox(
+                                width: AppConstants.scalingFactor *
+                                    AppConstants.dayWidth /
+                                    2),
+                            PeriodHeader(
+                                periodText: 'V',
+                                startDate: AppConstants().fifthPeriodStartDate,
+                                endDate: AppConstants().fifthPeriodEndDate),
                           ] else if (semester.toLowerCase() == 'autumn') ...[
-                            PeriodHeader(periodText: 'I'),
-                            SizedBox(width: 5),
-                            PeriodHeader(periodText: 'II'),
+                            PeriodHeader(
+                                periodText: 'I',
+                                startDate: AppConstants().firstPeriodStartDate,
+                                endDate: AppConstants().firstPeriodEndDate),
+                            SizedBox(
+                                width: AppConstants.scalingFactor *
+                                    AppConstants.dayWidth /
+                                    2),
+                            PeriodHeader(
+                                periodText: 'II',
+                                startDate: AppConstants().secondPeriodStartDate,
+                                endDate: AppConstants().secondPeriodEndDate),
                           ],
                       ],
                     ),
@@ -157,9 +175,9 @@ class EditButton extends StatelessWidget {
                       const SizedBox(height: 16.0),
                       Slider(
                         value: scaleFactor,
-                        min: 3,
+                        min: 1,
                         max: 25,
-                        divisions: 22,
+                        divisions: 24,
                         label: '${scaleFactor.round()}',
                         onChanged: (double value) {
                           setState(() {

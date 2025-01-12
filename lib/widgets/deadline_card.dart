@@ -58,8 +58,8 @@ class _DeadlineCardState extends State<DeadlineCard> {
       return Colors.green;
     } else if (widget.deadline.dueDate.isBefore(DateTime.now())) {
       return Colors.red;
-    } else if (widget.deadline.dueDate
-        .isBefore(DateTime.now().add(Duration(days: 5)))) {
+    } else if (widget.deadline.dueDate.isBefore(
+        DateTime.now().add(Duration(days: AppConstants.dangerZoneDays)))) {
       return const Color.fromARGB(255, 255, 190, 93);
     } else {
       return Color.fromARGB(255, 121, 215, 249);
@@ -93,9 +93,7 @@ class _DeadlineCardState extends State<DeadlineCard> {
           borderRadius: BorderRadius.circular(4.0),
         ),
         child: SizedBox(
-          width: widget.semester.toLowerCase() == 'spring'
-              ? AppConstants.springDeadlineCardWidth - 5
-              : AppConstants.autumnDeadlineCardWidth - 5,
+          width: AppConstants().getDeadlineCardWidth(),
           child: InkWell(
             onTap: () {},
             child: Column(

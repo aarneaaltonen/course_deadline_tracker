@@ -10,12 +10,17 @@ class AppConstants {
   static const double courseCardWidth = 300;
   static const double calendarTailWidth = 1000;
 
-  static double get springDeadlineCardWidth => 14.99 * scalingFactor;
-  static double get autumnDeadlineCardWidth =>
-      13.69 *
-      scalingFactor; //these are silly, should really find a consistent way to calculate them based on a single width
-  //right now no easy way to change the width of the cards to conform to a "danger zone" day amount
-  //i've been eyeballing it an adding evil magic numbers for it to look right (and not collide easily in y-positioning algorithm) >:)
+  static const int dangerZoneDays =
+      5; // Days before deadline which determine the width (and color) of the deadline card
+
+  static const double dayWidth =
+      4; //basic unit to calculate the width of the calendar
+
+  double get springWidth => dayWidth * springDifference;
+  double get autumnWidth => dayWidth * autumnDifference;
+
+  double get scaledSpringWidth => springWidth * scalingFactor;
+  double get scaledAutumnWidth => autumnWidth * scalingFactor;
 
   final DateTime springStartDate = DateTime(2025, 1, 6);
   final DateTime springEndDate = DateTime(2025, 6, 7);
@@ -26,13 +31,33 @@ class AppConstants {
   late final int autumnDifference;
   late final double autumnPeriodHeaderWidth;
 
+  final DateTime thirdPeriodStartDate = DateTime(2025, 1, 6);
+  final DateTime thirdPeriodEndDate = DateTime(2025, 2, 23);
+  final DateTime fourthPeriodStartDate = DateTime(2025, 2, 24);
+  final DateTime fourthPeriodEndDate = DateTime(2025, 4, 13);
+  final DateTime fifthPeriodStartDate = DateTime(2025, 4, 14);
+  final DateTime fifthPeriodEndDate = DateTime(2025, 6, 6);
+
+  final DateTime firstPeriodStartDate = DateTime(2025, 8, 25);
+  final DateTime firstPeriodEndDate = DateTime(2025, 10, 19);
+  final DateTime secondPeriodStartDate = DateTime(2025, 10, 20);
+  final DateTime secondPeriodEndDate = DateTime(2025, 12, 14);
+
   AppConstants() {
-    // Initialize the spring and autumn differences
     springDifference = daysBetween(springStartDate, springEndDate);
     autumnDifference = daysBetween(autumnStartDate, autumnEndDate);
-    // Initialize period header widths
     periodHeaderWidth = scalingFactor * springDifference;
     autumnPeriodHeaderWidth = scalingFactor * autumnDifference;
+  }
+
+  double getCalendarWidth(String semester) {
+    return semester.toLowerCase() == 'spring'
+        ? scaledSpringWidth + calendarTailWidth
+        : scaledAutumnWidth + calendarTailWidth;
+  }
+
+  double getDeadlineCardWidth() {
+    return scalingFactor * dayWidth * dangerZoneDays;
   }
 
   int daysBetween(DateTime from, DateTime to) {

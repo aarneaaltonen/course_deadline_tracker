@@ -4,13 +4,20 @@ import '../constants.dart';
 
 class PeriodHeader extends StatelessWidget {
   final String periodText;
+  final DateTime startDate;
+  final DateTime endDate;
 
-  PeriodHeader({required this.periodText});
+  PeriodHeader(
+      {required this.periodText,
+      required this.startDate,
+      required this.endDate});
 
   @override
   Widget build(BuildContext context) {
+    final int daysBetween = endDate.difference(startDate).inDays + 1;
+    final double width = daysBetween * 4.0 * AppConstants.scalingFactor;
     return SizedBox(
-      width: AppConstants().periodHeaderWidth,
+      width: width,
       child: Container(
         height: 40,
         decoration: BoxDecoration(

@@ -88,7 +88,7 @@ class IntervalPainter extends CustomPainter {
       ..color = const Color.fromARGB(100, 201, 201, 201)
       ..strokeWidth = 0.5;
 
-    for (int i = 0; i < totalDays + 10; i++) {
+    for (int i = -10; i < totalDays + 20; i++) {
       double x = leftOffset + (i / totalDays) * availableWidth;
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), dayPaint);
       //week lines
