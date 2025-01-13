@@ -23,6 +23,7 @@ class _CourseCardState extends State<CourseCard> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       onTapDown: (_) {
@@ -61,7 +62,9 @@ class _CourseCardState extends State<CourseCard> {
         });
       },
       child: Card(
-        color: Color(widget.course.color),
+        color: isDarkMode
+            ? Color(widget.course.color).withValues(alpha: 0.9)
+            : Color(widget.course.color),
         shape: _isPressed
             ? RoundedRectangleBorder(
                 side: BorderSide(color: Colors.blue, width: 2.0),

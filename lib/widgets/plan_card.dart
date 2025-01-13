@@ -32,7 +32,12 @@ class PlanCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
               gradient: LinearGradient(
-                colors: [Colors.white, Colors.blue.shade50],
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? [
+                        const Color.fromARGB(255, 82, 82, 82),
+                        const Color.fromARGB(255, 53, 38, 56)
+                      ]
+                    : [Colors.white, Colors.blue.shade50],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -111,9 +116,9 @@ class PlanPopover extends StatelessWidget {
             value: 'delete',
             child: Row(
               children: [
-                Icon(Icons.delete, color: Colors.black),
+                Icon(Icons.delete),
                 SizedBox(width: 8.0),
-                Text('Delete plan', style: TextStyle(color: Colors.black)),
+                Text('Delete plan'),
               ],
             ),
           ),

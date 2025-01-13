@@ -14,6 +14,8 @@ class PeriodHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     final int daysBetween = endDate.difference(startDate).inDays + 1;
     final double width = daysBetween * 4.0 * AppConstants.scalingFactor;
     return SizedBox(
@@ -22,7 +24,9 @@ class PeriodHeader extends StatelessWidget {
       child: Container(
         height: 40,
         decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 189, 216, 236),
+            color: isDarkMode
+                ? const Color.fromARGB(255, 113, 90, 140)
+                : const Color.fromARGB(255, 189, 216, 236),
             border: Border.all(color: const Color.fromARGB(255, 74, 74, 74)),
             borderRadius: BorderRadius.circular(10)),
         child: Center(

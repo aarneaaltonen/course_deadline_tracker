@@ -8,19 +8,24 @@ class ProgressBarPainter extends CustomPainter {
   final String semester;
   final int index;
   final bool last;
+  final context;
 
   ProgressBarPainter(
-      {required this.semester, required this.index, required this.last});
+      {required this.semester,
+      required this.index,
+      required this.last,
+      this.context});
 
   @override
   void paint(Canvas canvas, Size size) {
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     //progress bar
     final DateTime now = DateTime.now();
     double progressX =
         HelperFunctions().calculateLeftPosition(now, size.width, semester);
 
     final progressPaint = Paint()
-      ..color = const Color.fromARGB(255, 0, 0, 0)
+      ..color = isDarkMode ? Colors.white : const Color.fromARGB(255, 0, 0, 0)
       ..strokeWidth = 2.0;
 
     canvas.drawLine(
@@ -42,7 +47,10 @@ class ProgressBarPainter extends CustomPainter {
           text: intl.DateFormat('dd.M').format(
             DateTime.now(),
           ),
-          style: const TextStyle(color: Colors.black, fontSize: 10),
+          style: TextStyle(
+            color: isDarkMode ? Colors.white : Colors.black,
+            fontSize: 10,
+          ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
@@ -69,12 +77,17 @@ class IntervalPainter extends CustomPainter {
   final String semester;
   final int index;
   final bool last;
+  final context;
 
   IntervalPainter(
-      {required this.semester, required this.index, required this.last});
+      {required this.semester,
+      required this.index,
+      required this.last,
+      this.context});
 
   @override
   void paint(Canvas canvas, Size size) {
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     const double leftOffset = AppConstants.courseCardWidth;
     final double availableWidth = size.width - AppConstants.calendarTailWidth;
 
@@ -85,7 +98,9 @@ class IntervalPainter extends CustomPainter {
 
     // Day lines
     final dayPaint = Paint()
-      ..color = const Color.fromARGB(100, 201, 201, 201)
+      ..color = isDarkMode
+          ? const Color.fromARGB(100, 255, 255, 255)
+          : const Color.fromARGB(100, 201, 201, 201)
       ..strokeWidth = 0.5;
 
     for (int i = -10; i < totalDays + 20; i++) {
@@ -94,7 +109,9 @@ class IntervalPainter extends CustomPainter {
       //week lines
       if (i % 7 == 0) {
         final paint = Paint()
-          ..color = const Color.fromARGB(255, 93, 93, 93)
+          ..color = isDarkMode
+              ? const Color.fromARGB(255, 200, 200, 200)
+              : const Color.fromARGB(255, 93, 93, 93)
           ..strokeWidth = 1.0;
         canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
         // if (last) { //show date only on bottom course, less buzy
@@ -105,7 +122,10 @@ class IntervalPainter extends CustomPainter {
                   ? constants.springStartDate.add(Duration(days: i))
                   : constants.autumnStartDate.add(Duration(days: i)),
             ),
-            style: const TextStyle(color: Colors.black, fontSize: 10),
+            style: TextStyle(
+              color: isDarkMode ? Colors.white : Colors.black,
+              fontSize: 10,
+            ),
           ),
           textDirection: TextDirection.ltr,
         )..layout();

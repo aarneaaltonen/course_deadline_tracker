@@ -24,6 +24,8 @@ class CourseCardLane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Card(
       elevation: 10.0,
       child: Row(
@@ -33,7 +35,9 @@ class CourseCardLane extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.white, Colors.blue.shade50],
+                  colors: isDarkMode
+                      ? [Colors.grey.shade800, Colors.grey.shade900]
+                      : [Colors.white, Colors.blue.shade50],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -47,6 +51,7 @@ class CourseCardLane extends StatelessWidget {
                         semester: semester,
                         index: index,
                         last: last,
+                        context: context,
                       ),
                       child: Container(), // Day lines at the back
                     ),
@@ -57,6 +62,7 @@ class CourseCardLane extends StatelessWidget {
                           semester: semester,
                           index: index,
                           last: last,
+                          context: context,
                         ),
                         child: Container(), // Empty container to provide size
                       ),
