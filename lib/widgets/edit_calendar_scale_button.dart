@@ -1,48 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../controllers/scale_factor_controller.dart';
+import '../controllers/theme_controller.dart';
 
-class EditButton extends StatelessWidget {
-  final scaleFactorController = Get.find<ScaleFactorController>();
+class EditCalendarScaleButton extends StatelessWidget {
+  final ScaleFactorController scaleFactorController =
+      Get.find<ScaleFactorController>();
+  final ThemeController themeController = Get.find<ThemeController>();
 
-  EditButton({super.key});
   @override
   Widget build(BuildContext context) {
-    double scaleFactor = scaleFactorController.scaleFactor.value.toDouble();
     return IconButton(
-      icon: Icon(Icons.edit),
+      icon: Icon(Icons.settings),
       onPressed: () {
-        // Show Bottom Sheet with a slider
         showModalBottomSheet(
           context: context,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(16.0),
-            ),
-          ),
           builder: (BuildContext context) {
             return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
+                double scaleFactor =
+                    scaleFactorController.scaleFactor.value.toDouble();
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        'Adjust Scale Factor',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 16.0),
+                      Text('Adjust Calendar Scale'),
                       Slider(
                         value: scaleFactor,
-                        min: 1,
-                        max: 25,
-                        divisions: 24,
-                        label: '${scaleFactor.round()}',
+                        min: 1.0,
+                        max: 20.0,
+                        divisions: 19,
+                        label: scaleFactor.toString(),
                         onChanged: (double value) {
                           setState(() {
                             scaleFactor = value;
@@ -61,6 +50,7 @@ class EditButton extends StatelessWidget {
                         },
                         child: const Text('Done'),
                       ),
+                      const SizedBox(height: 16.0),
                     ],
                   ),
                 );
@@ -71,5 +61,24 @@ class EditButton extends StatelessWidget {
       },
       tooltip: 'Change Calendar Scale',
     );
+  }
+}
+
+class ThemeToggleSwitch extends StatelessWidget {
+  final ThemeController themeController = Get.find<ThemeController>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      return Tooltip(
+        message: 'Toggle Theme',
+        child: Switch(
+          value: themeController.isDarkMode.value,
+          onChanged: (bool value) {
+            themeController.toggleTheme();
+          },
+        ),
+      );
+    });
   }
 }

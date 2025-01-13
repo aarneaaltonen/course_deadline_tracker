@@ -85,7 +85,7 @@ class DeadlineInfoContent extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.delete, color: Colors.black),
+                        icon: Icon(Icons.delete),
                         tooltip: 'Delete deadline',
                         onPressed: () {
                           showDialog(

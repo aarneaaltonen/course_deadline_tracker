@@ -7,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'controllers/deadline_controller.dart';
+import 'controllers/theme_controller.dart';
 import 'pages/home_page.dart';
 import 'pages/planner_page.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox('storage');
+  Get.put<ThemeController>(ThemeController());
   Get.put<ScaleFactorController>(ScaleFactorController());
   Get.put<DeadlineController>(DeadlineController());
   Get.put<CourseController>(CourseController());
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark(
         useMaterial3: true,
       ),
-      // themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => HomePage()),

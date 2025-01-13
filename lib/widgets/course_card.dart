@@ -247,22 +247,29 @@ class _CourseDialogContentState extends State<CourseDialogContent> {
   }
 
   Widget _buildColorOption(Color color) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedColor = color;
-        });
-      },
-      child: Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          color: color,
-          border: Border.all(
-            color: _selectedColor == color ? Colors.black : Colors.transparent,
-            width: 2,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedColor = color;
+          });
+        },
+        child: Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: color,
+            border: Border.all(
+              color: _selectedColor == color
+                  ? (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black)
+                  : Colors.transparent,
+              width: 2,
+            ),
+            borderRadius: BorderRadius.circular(15),
           ),
-          borderRadius: BorderRadius.circular(15),
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../controllers/semester_plan_controller.dart';
 import '../widgets/add_semester_plan_button.dart';
+import '../widgets/edit_calendar_scale_button.dart';
 import '../widgets/plan_card.dart';
 
 class HomePage extends StatelessWidget {
@@ -13,7 +14,13 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Course Deadline Tracker'),
+        title: Row(
+          children: [
+            const Text('Course Deadline Tracker'),
+            Spacer(),
+            ThemeToggleSwitch()
+          ],
+        ),
       ),
       body: Stack(
         children: <Widget>[

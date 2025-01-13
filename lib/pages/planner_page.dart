@@ -8,15 +8,20 @@ import '../controllers/courses_controller.dart';
 import '../controllers/semester_plan_controller.dart';
 
 import '../widgets/course_deadline_grid_container.dart';
+import '../widgets/edit_calendar_scale_button.dart';
 
+// ignore: must_be_immutable
 class PlanPage extends StatelessWidget {
   final String id = Get.parameters['id']!;
   final planController = Get.find<SemesterPlanController>();
   final coursesController = Get.find<CourseController>();
   final ScrollController scrollController = ScrollController();
+  bool shouldScrollToProgress =
+      true; //added this to prevent scrolling on every rerender
 
 //bring view to progress on first load
   void _scrollToProgress() {
+    if (!shouldScrollToProgress) return;
     // Calculate the scroll position based on the progress
     final planController = Get.find<SemesterPlanController>();
     final planData = planController.getPlanById(id);
@@ -54,6 +59,7 @@ class PlanPage extends StatelessWidget {
     final planData = planController.getPlanById(id);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToProgress();
+      shouldScrollToProgress = false;
     });
 
     return Scaffold(
@@ -71,15 +77,16 @@ class PlanPage extends StatelessWidget {
             Spacer(),
             Text(planData!.name),
             Spacer(),
-            EditButton(),
-            IconButton(
-              icon: Icon(Icons.format_list_bulleted,
-                  color: const Color.fromARGB(255, 0, 0, 0)),
-              tooltip: "View Deadlines",
-              onPressed: () {
-                // Handle button press
-              },
-            ),
+            ThemeToggleSwitch(),
+            EditCalendarScaleButton(),
+            // IconButton(
+            //   icon: Icon(Icons.format_list_bulleted,
+            //       color: const Color.fromARGB(255, 0, 0, 0)),
+            //   tooltip: "View Deadlines",
+            //   onPressed: () {
+            //     // Handle button press
+            //   },
+            // ),
           ],
         ),
       ),
