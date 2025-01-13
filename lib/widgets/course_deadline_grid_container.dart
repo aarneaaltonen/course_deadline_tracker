@@ -28,114 +28,126 @@ class CourseDeadlineGridContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Stack(
-        children: [
-          SingleChildScrollView(
-            controller: scrollController,
-            scrollDirection: Axis.horizontal,
-            child: Obx(() {
-              return SizedBox(
-                width: AppConstants().getCalendarWidth(semester) + 10,
-                child: Column(
-                  children: [
-                    Row(
+    return LayoutBuilder(builder: (context, constraints) {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                controller: scrollController,
+                scrollDirection: Axis.horizontal,
+                child: Obx(() {
+                  return SizedBox(
+                    width: AppConstants().getCalendarWidth(semester) + 10,
+                    child: Column(
                       children: [
-                        SizedBox(
-                          width: AppConstants.courseCardWidth,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(child: Container()),
-                              if (courses.isNotEmpty) EditButton(),
-                            ],
-                          ),
-                        ),
-                        if (courses.isNotEmpty)
-                          if (semester.toLowerCase() == 'spring') ...[
-                            PeriodHeader(
-                                periodText: 'III',
-                                startDate: AppConstants().thirdPeriodStartDate,
-                                endDate: AppConstants().thirdPeriodEndDate),
+                        Row(
+                          children: [
                             SizedBox(
-                                width: AppConstants.scalingFactor *
-                                    AppConstants.dayWidth /
-                                    2),
-                            PeriodHeader(
-                                periodText: 'IV',
-                                startDate: AppConstants().fourthPeriodStartDate,
-                                endDate: AppConstants().fourthPeriodEndDate),
-                            SizedBox(
-                                width: AppConstants.scalingFactor *
-                                    AppConstants.dayWidth /
-                                    2),
-                            PeriodHeader(
-                                periodText: 'V',
-                                startDate: AppConstants().fifthPeriodStartDate,
-                                endDate: AppConstants().fifthPeriodEndDate),
-                          ] else if (semester.toLowerCase() == 'autumn') ...[
-                            PeriodHeader(
-                                periodText: 'I',
-                                startDate: AppConstants().firstPeriodStartDate,
-                                endDate: AppConstants().firstPeriodEndDate),
-                            SizedBox(
-                                width: AppConstants.scalingFactor *
-                                    AppConstants.dayWidth /
-                                    2),
-                            PeriodHeader(
-                                periodText: 'II',
-                                startDate: AppConstants().secondPeriodStartDate,
-                                endDate: AppConstants().secondPeriodEndDate),
+                              width: AppConstants.courseCardWidth,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(child: Container()),
+                                  if (courses.isNotEmpty) EditButton(),
+                                ],
+                              ),
+                            ),
+                            if (courses.isNotEmpty)
+                              if (semester.toLowerCase() == 'spring') ...[
+                                PeriodHeader(
+                                    periodText: 'III',
+                                    startDate:
+                                        AppConstants().thirdPeriodStartDate,
+                                    endDate: AppConstants().thirdPeriodEndDate),
+                                SizedBox(
+                                    width: AppConstants.scalingFactor *
+                                        AppConstants.dayWidth /
+                                        2),
+                                PeriodHeader(
+                                    periodText: 'IV',
+                                    startDate:
+                                        AppConstants().fourthPeriodStartDate,
+                                    endDate:
+                                        AppConstants().fourthPeriodEndDate),
+                                SizedBox(
+                                    width: AppConstants.scalingFactor *
+                                        AppConstants.dayWidth /
+                                        2),
+                                PeriodHeader(
+                                    periodText: 'V',
+                                    startDate:
+                                        AppConstants().fifthPeriodStartDate,
+                                    endDate: AppConstants().fifthPeriodEndDate),
+                              ] else if (semester.toLowerCase() ==
+                                  'autumn') ...[
+                                PeriodHeader(
+                                    periodText: 'I',
+                                    startDate:
+                                        AppConstants().firstPeriodStartDate,
+                                    endDate: AppConstants().firstPeriodEndDate),
+                                SizedBox(
+                                    width: AppConstants.scalingFactor *
+                                        AppConstants.dayWidth /
+                                        2),
+                                PeriodHeader(
+                                    periodText: 'II',
+                                    startDate:
+                                        AppConstants().secondPeriodStartDate,
+                                    endDate:
+                                        AppConstants().secondPeriodEndDate),
+                              ],
                           ],
+                        ),
+                        ListView.builder(
+                          itemCount: courses.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            final DeadlineController deadlineController =
+                                Get.find<DeadlineController>();
+                            final course = courses[index];
+                            return Obx(() {
+                              final deadlines = deadlineController
+                                  .fetchDeadlinesForCourse(course.id)
+                                  .where((deadline) =>
+                                      deadline.courseId == course.id)
+                                  .toList();
+                              final last = index == courses.length - 1;
+                              return CourseCardLane(
+                                course: course,
+                                semester: semester,
+                                index: index,
+                                last: last,
+                                deadlines: deadlines,
+                              );
+                            });
+                          },
+                        ),
+                        SizedBox(height: 100),
                       ],
                     ),
-                    ListView.builder(
-                      itemCount: courses.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        final DeadlineController deadlineController =
-                            Get.find<DeadlineController>();
-                        final course = courses[index];
-                        return Obx(() {
-                          final deadlines = deadlineController
-                              .fetchDeadlinesForCourse(course.id)
-                              .where(
-                                  (deadline) => deadline.courseId == course.id)
-                              .toList();
-                          final last = index == courses.length - 1;
-                          return CourseCardLane(
-                            course: course,
-                            semester: semester,
-                            index: index,
-                            last: last,
-                            deadlines: deadlines,
-                          );
-                        });
-                      },
+                  );
+                }),
+              ),
+              Positioned(
+                top: 40, //should prolly use layoutbuilder to get the height
+                child: Column(
+                  children: [
+                    for (var course in courses) CourseCard(course: course),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [AddCourseButton(semesterPlanId: planId)],
                     ),
                   ],
                 ),
-              );
-            }),
+              ),
+            ],
           ),
-          Positioned(
-            top: 40,
-            child: Column(
-              children: [
-                for (var course in courses) CourseCard(course: course),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Row(
-                    children: [AddCourseButton(semesterPlanId: planId)],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 }
 

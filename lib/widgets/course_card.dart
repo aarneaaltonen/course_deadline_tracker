@@ -213,7 +213,7 @@ class _CourseDialogContentState extends State<CourseDialogContent> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildColorOption(const Color.fromARGB(255, 254, 156, 149)),
-            _buildColorOption(const Color.fromARGB(255, 149, 252, 153)),
+            _buildColorOption(const Color.fromARGB(255, 146, 249, 150)),
             _buildColorOption(const Color.fromARGB(255, 147, 206, 255)),
             _buildColorOption(const Color.fromARGB(255, 232, 222, 131)),
             _buildColorOption(const Color.fromARGB(255, 230, 143, 245)),

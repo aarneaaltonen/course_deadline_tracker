@@ -85,6 +85,7 @@ class PlanPage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          SizedBox(height: 4),
           Expanded(
             child: Obx(() {
               final courses = coursesController.fetchCoursesForPlan(id);

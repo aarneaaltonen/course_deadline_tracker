@@ -18,6 +18,7 @@ class PeriodHeader extends StatelessWidget {
     final double width = daysBetween * 4.0 * AppConstants.scalingFactor;
     return SizedBox(
       width: width,
+      height: 40,
       child: Container(
         height: 40,
         decoration: BoxDecoration(

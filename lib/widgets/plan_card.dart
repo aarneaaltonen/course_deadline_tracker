@@ -70,12 +70,39 @@ class PlanPopover extends StatelessWidget {
     controller.deletePlan(id);
   }
 
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Plan'),
+          content: Text('Are you sure you want to delete this plan?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _deletePlan();
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
       onSelected: (value) {
         if (value == 'delete') {
-          _deletePlan();
+          _showDeleteConfirmationDialog(context);
         }
       },
       itemBuilder: (BuildContext context) {
@@ -84,20 +111,14 @@ class PlanPopover extends StatelessWidget {
             value: 'delete',
             child: Row(
               children: [
-                Icon(Icons.delete, color: Colors.red),
+                Icon(Icons.delete, color: Colors.black),
                 SizedBox(width: 8.0),
-                Text('Delete', style: TextStyle(color: Colors.red)),
+                Text('Delete plan', style: TextStyle(color: Colors.black)),
               ],
             ),
           ),
         ];
       },
-      icon: Icon(Icons.settings, color: Colors.grey),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      color: Colors.white,
-      elevation: 5,
     );
   }
 }
