@@ -4,7 +4,6 @@ import 'package:aalto_course_tracker/controllers/courses_controller.dart';
 import 'package:aalto_course_tracker/controllers/scale_factor_controller.dart';
 import 'package:aalto_course_tracker/controllers/semester_plan_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'controllers/deadline_controller.dart';
@@ -14,7 +13,6 @@ import 'pages/planner_page.dart';
 Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox('storage');
-  await dotenv.load(fileName: ".env");
   Get.put<ScaleFactorController>(ScaleFactorController());
   Get.put<DeadlineController>(DeadlineController());
   Get.put<CourseController>(CourseController());
