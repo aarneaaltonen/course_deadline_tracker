@@ -1,17 +1,23 @@
+import 'package:aalto_course_tracker/controllers/warning_day_num_controller.dart';
 import 'package:get/get.dart';
 import '../controllers/scale_factor_controller.dart';
 
 class AppConstants {
+  final WarningDayNumController warningDayNumController =
+      Get.find<WarningDayNumController>();
   static double get scalingFactor {
     final scaleFactorController = Get.find<ScaleFactorController>();
     return scaleFactorController.scaleFactor.value.toDouble();
   }
 
+  static int get dangerZoneDays {
+    final WarningDayNumController warningDayNumController =
+        Get.find<WarningDayNumController>();
+    return warningDayNumController.warningDayNum.value.toInt();
+  }
+
   static const double courseCardWidth = 300;
   static const double calendarTailWidth = 1000;
-
-  static const int dangerZoneDays =
-      5; // Days before deadline which determine the width (and color) of the deadline card
 
   static const double dayWidth =
       4; //basic unit to calculate the width of the calendar
@@ -57,7 +63,9 @@ class AppConstants {
   }
 
   double getDeadlineCardWidth() {
-    return scalingFactor * dayWidth * dangerZoneDays;
+    return scalingFactor *
+        dayWidth *
+        warningDayNumController.warningDayNum.value;
   }
 
   int daysBetween(DateTime from, DateTime to) {

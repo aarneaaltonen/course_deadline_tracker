@@ -4,17 +4,21 @@ import 'package:aalto_course_tracker/controllers/courses_controller.dart';
 import 'package:aalto_course_tracker/controllers/scale_factor_controller.dart';
 import 'package:aalto_course_tracker/controllers/semester_plan_controller.dart';
 import 'package:aalto_course_tracker/controllers/standard_side_sheet_controller.dart';
+import 'package:aalto_course_tracker/controllers/upcoming_deadlines_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'controllers/deadline_controller.dart';
 import 'controllers/theme_controller.dart';
+import 'controllers/warning_day_num_controller.dart';
 import 'pages/home_page.dart';
 import 'pages/planner_page.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox('storage');
+  Get.put<WarningDayNumController>(WarningDayNumController());
+  Get.put<UpcomingDeadlinesController>(UpcomingDeadlinesController());
   Get.put<StandardSideSheetController>(StandardSideSheetController());
   Get.put<ThemeController>(ThemeController());
   Get.put<ScaleFactorController>(ScaleFactorController());

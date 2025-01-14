@@ -1,4 +1,5 @@
 import 'package:aalto_course_tracker/controllers/standard_side_sheet_controller.dart';
+import 'package:aalto_course_tracker/controllers/upcoming_deadlines_controller.dart';
 import 'package:aalto_course_tracker/utils/utils.dart';
 import 'package:aalto_course_tracker/widgets/deadline_viewer.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ class PlanPage extends StatelessWidget {
       Get.find<StandardSideSheetController>();
   bool shouldScrollToProgress =
       true; //added this to prevent scrolling on every rerender
+  final UpcomingDeadlinesController upcomingDeadlinesController =
+      Get.find<UpcomingDeadlinesController>();
 
 //bring view to progress on first load
   void _scrollToProgress() {
@@ -84,12 +87,50 @@ class PlanPage extends StatelessWidget {
             Spacer(),
             Text(planData!.name),
             Spacer(),
-            IconButton(
-              icon: Icon(Icons.format_list_bulleted),
-              onPressed: () {
-                sideSheetController.toggleSideSheet();
-              },
-              tooltip: "View Upcoming Deadlines",
+            Stack(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.format_list_bulleted),
+                  onPressed: () {
+                    sideSheetController.toggleSideSheet();
+                  },
+                  tooltip: "View Upcoming Deadlines",
+                ),
+                Positioned(
+                  right: 0,
+                  bottom: 2,
+                  child: Obx(
+                    () => upcomingDeadlinesController
+                                .upcomingDeadlineCount.value ==
+                            0
+                        ? Container()
+                        : Container(
+                            padding: EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? const Color.fromARGB(255, 178, 98, 0)
+                                  : const Color.fromARGB(255, 255, 190, 93),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            constraints: BoxConstraints(
+                              minWidth: 14,
+                              minHeight: 14,
+                            ),
+                            child: Text(
+                              upcomingDeadlinesController
+                                  .upcomingDeadlineCount.value
+                                  .toString(), // You can change this to a variable to show dynamic values
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                  ),
+                ),
+              ],
             ),
             ThemeToggleSwitch(),
             EditCalendarScaleButton(),

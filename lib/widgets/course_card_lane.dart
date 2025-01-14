@@ -44,31 +44,44 @@ class CourseCardLane extends StatelessWidget {
               ),
               child: SizedBox(
                 height: 80,
-                child: Stack(
-                  children: [
-                    CustomPaint(
-                      painter: IntervalPainter(
-                        semester: semester,
-                        index: index,
-                        last: last,
-                        context: context,
-                      ),
-                      child: Container(), // Day lines at the back
-                    ),
-                    ..._buildDeadlineWidgets(), // Deadline cards go first
-                    IgnorePointer(
-                      child: CustomPaint(
-                        painter: ProgressBarPainter(
+                child: Obx(() {
+                  final deadlineWidgets = _buildDeadlineWidgets();
+                  return Stack(
+                    children: [
+                      CustomPaint(
+                        painter: IntervalPainter(
                           semester: semester,
                           index: index,
                           last: last,
                           context: context,
                         ),
-                        child: Container(), // Empty container to provide size
+                        child: Container(), // Day lines at the back
                       ),
-                    ),
-                  ],
-                ),
+                      if (deadlineWidgets
+                          .isEmpty) //still new to Obx so did a hacky thing and added this so either way the obx has a child that its watching
+                        Center(
+                          child: Opacity(
+                            opacity: 0.0,
+                            child: Text(
+                                'No deadlines available (${deadlineController.deadlines.length})'),
+                          ),
+                        )
+                      else
+                        ...deadlineWidgets, // Deadline cards go first
+                      IgnorePointer(
+                        child: CustomPaint(
+                          painter: ProgressBarPainter(
+                            semester: semester,
+                            index: index,
+                            last: last,
+                            context: context,
+                          ),
+                          child: Container(), // Empty container to provide size
+                        ),
+                      ),
+                    ],
+                  );
+                }),
               ),
             ),
           ),

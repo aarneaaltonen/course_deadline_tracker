@@ -1,11 +1,14 @@
+import 'package:aalto_course_tracker/controllers/upcoming_deadlines_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
 
+import '../constants.dart';
 import '../controllers/courses_controller.dart';
 import '../controllers/deadline_controller.dart';
 import '../controllers/standard_side_sheet_controller.dart';
+import '../controllers/warning_day_num_controller.dart';
 import '../models/models.dart';
 import 'deadline_info_content.dart';
 
@@ -16,6 +19,10 @@ class DeadlineViewer extends StatelessWidget {
   final openController = Get.find<StandardSideSheetController>();
   final deadlineController = Get.find<DeadlineController>();
   final coursesController = Get.find<CourseController>();
+  final UpcomingDeadlinesController upcomingDeadlinesController =
+      Get.find<UpcomingDeadlinesController>();
+  final WarningDayNumController warningDayNumController =
+      Get.find<WarningDayNumController>();
 
   DeadlineViewer({super.key, required this.planData});
 
@@ -41,6 +48,15 @@ class DeadlineViewer extends StatelessWidget {
         return !deadline.isCompleted &&
             !deadline.dueDate.isBefore(DateTime.now());
       }).toList();
+      final dangerZoneDeadlines = pendingDeadlines.where((deadline) {
+        return deadline.dueDate.isBefore(DateTime.now()
+            .add(Duration(days: warningDayNumController.warningDayNum.value)));
+      }).toList();
+
+      // Update the count of upcoming deadlines
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        upcomingDeadlinesController.updateCount(dangerZoneDeadlines.length);
+      });
 
       return Container(
         padding: EdgeInsets.all(16.0),
@@ -134,6 +150,53 @@ class DeadlineViewer extends StatelessWidget {
                   ],
                 ),
               ),
+            SizedBox(
+              height: 100.0,
+              child: Container(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Change warning day amount',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        Obx(() {
+                          return Expanded(
+                            child: Slider(
+                              value: warningDayNumController.warningDayNum.value
+                                  .toDouble(),
+                              min: 1.0,
+                              max: 10.0,
+                              divisions: 9,
+                              label: warningDayNumController.warningDayNum.value
+                                  .toString(),
+                              onChanged: (double value) {
+                                warningDayNumController
+                                    .setWarningDayNum(value.toInt());
+                              },
+                              onChangeEnd: (double value) {
+                                warningDayNumController
+                                    .setAndSaveWarningDayNum(value.toInt());
+                              },
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                    Text(
+                      "The warning day number indicates how many days before a deadline the service visually distinguishes it. Deadlines within the 'danger zone' are highlighted in orange.",
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       );
@@ -161,8 +224,8 @@ class DeadlineViewerCard extends StatelessWidget {
       return isDarkMode
           ? const Color.fromARGB(255, 150, 26, 26)
           : const Color.fromARGB(255, 255, 116, 107);
-    } else if (deadline.dueDate
-        .isBefore(DateTime.now().add(Duration(days: 7)))) {
+    } else if (deadline.dueDate.isBefore(
+        DateTime.now().add(Duration(days: AppConstants.dangerZoneDays)))) {
       return isDarkMode
           ? const Color.fromARGB(255, 178, 98, 0)
           : const Color.fromARGB(255, 255, 190, 93);
