@@ -5,7 +5,7 @@ _Course Deadline Tracker_ is a Flutter project designed to simplify the hassle o
 The lightweight application requires no login, and all your data is securely stored locally in your browser.
 Live application [Demo](https://flutter-course-tracker.web.app/).
 
-![Course Deadline Tracker Screenshot](./images/image1.png)
+![Course Deadline Tracker Screenshot](./images/image1.PNG)
 
 ## Usage
 
@@ -14,7 +14,7 @@ Live application [Demo](https://flutter-course-tracker.web.app/).
 3. **Add Deadlines**: Assign deadlines to each course by specifying a date to display them on the calendar. Optionally, include an exact time for the deadline, which defaults to 23:59 if left unspecified.
 4. **Edit Deadline**: Mark deadline as completed and divert your focus on the next one.
 
-![Course Deadline Tracker Screenshot](./images/image3.png)
+![Course Deadline Tracker Screenshot](./images/image3.PNG)
 
 ## Features
 
@@ -24,4 +24,4 @@ Live application [Demo](https://flutter-course-tracker.web.app/).
 - Mark deadlines as completed
 - Fully responsive design, optimized for mobile, tablet, and desktop devices.
 
-![Course Deadline Tracker Screenshot](./images/image4.png)
+![Course Deadline Tracker Screenshot](./images/image4.PNG)
