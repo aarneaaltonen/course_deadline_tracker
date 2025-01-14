@@ -31,7 +31,7 @@ class CourseDeadlineGridContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.only(top: 10.0),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Stack(
@@ -136,33 +136,36 @@ class CourseDeadlineGridContainer extends StatelessWidget {
               Positioned(
                 left: courses.isEmpty ? (constraints.maxWidth / 2) - 150 : 0,
                 top: 40, //should prolly use layoutbuilder to get the height
-                child: Column(
-                  children: [
-                    for (var course in courses) CourseCard(course: course),
-                    SizedBox(height: 10),
-                    if (courses.isEmpty)
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Add a course to get started!',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    children: [
+                      for (var course in courses) CourseCard(course: course),
+                      SizedBox(height: 10),
+                      if (courses.isEmpty)
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Add a course to get started!',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.grey,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 20),
-                            AddCourseButton(semesterPlanId: planId),
-                          ],
+                              SizedBox(height: 20),
+                              AddCourseButton(semesterPlanId: planId),
+                            ],
+                          ),
+                        )
+                      else
+                        Row(
+                          children: [AddCourseButton(semesterPlanId: planId)],
                         ),
-                      )
-                    else
-                      Row(
-                        children: [AddCourseButton(semesterPlanId: planId)],
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

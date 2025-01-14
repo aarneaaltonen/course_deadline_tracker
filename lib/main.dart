@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:aalto_course_tracker/controllers/courses_controller.dart';
 import 'package:aalto_course_tracker/controllers/scale_factor_controller.dart';
 import 'package:aalto_course_tracker/controllers/semester_plan_controller.dart';
+import 'package:aalto_course_tracker/controllers/standard_side_sheet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -14,6 +15,7 @@ import 'pages/planner_page.dart';
 Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox('storage');
+  Get.put<StandardSideSheetController>(StandardSideSheetController());
   Get.put<ThemeController>(ThemeController());
   Get.put<ScaleFactorController>(ScaleFactorController());
   Get.put<DeadlineController>(DeadlineController());
@@ -25,7 +27,6 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

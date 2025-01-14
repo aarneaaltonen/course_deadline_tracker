@@ -1,7 +1,10 @@
+import 'package:aalto_course_tracker/controllers/standard_side_sheet_controller.dart';
 import 'package:aalto_course_tracker/utils/utils.dart';
+import 'package:aalto_course_tracker/widgets/deadline_viewer.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:modal_side_sheet/modal_side_sheet.dart';
 
 import '../constants.dart';
 import '../controllers/courses_controller.dart';
@@ -16,6 +19,8 @@ class PlanPage extends StatelessWidget {
   final planController = Get.find<SemesterPlanController>();
   final coursesController = Get.find<CourseController>();
   final ScrollController scrollController = ScrollController();
+  final StandardSideSheetController sideSheetController =
+      Get.find<StandardSideSheetController>();
   bool shouldScrollToProgress =
       true; //added this to prevent scrolling on every rerender
 
@@ -57,6 +62,7 @@ class PlanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final planData = planController.getPlanById(id);
+    final size = MediaQuery.of(context).size;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToProgress();
       shouldScrollToProgress = false;
@@ -64,6 +70,7 @@ class PlanPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 20,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,34 +84,42 @@ class PlanPage extends StatelessWidget {
             Spacer(),
             Text(planData!.name),
             Spacer(),
+            IconButton(
+              icon: Icon(Icons.format_list_bulleted),
+              onPressed: () {
+                sideSheetController.toggleSideSheet();
+              },
+              tooltip: "View Upcoming Deadlines",
+            ),
             ThemeToggleSwitch(),
             EditCalendarScaleButton(),
-            // IconButton(
-            //   icon: Icon(Icons.format_list_bulleted,
-            //       color: const Color.fromARGB(255, 0, 0, 0)),
-            //   tooltip: "View Deadlines",
-            //   onPressed: () {
-            //     // Handle button press
-            //   },
-            // ),
           ],
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 4),
-          Expanded(
-            child: Obx(() {
-              final courses = coursesController.fetchCoursesForPlan(id);
-              return CourseDeadlineGridContainer(
-                  courses: courses,
-                  semester: planData.semester,
-                  planId: id,
-                  scrollController: scrollController);
-            }),
+      body: Obx(() {
+        return BodyWithSideSheet(
+          body: Column(
+            children: [
+              SizedBox(height: 4),
+              Expanded(
+                child: Obx(() {
+                  final courses = coursesController.fetchCoursesForPlan(id);
+                  return CourseDeadlineGridContainer(
+                      courses: courses,
+                      semester: planData.semester,
+                      planId: id,
+                      scrollController: scrollController);
+                }),
+              ),
+            ],
           ),
-        ],
-      ),
+          sheetBody: DeadlineViewer(planData: planData),
+          sheetWidth: size.width < BreakPoints.medium
+              ? size.width - 2
+              : 500, //have its own separate page, when screen is small
+          show: sideSheetController.isOpen.value,
+        );
+      }),
     );
   }
 }
