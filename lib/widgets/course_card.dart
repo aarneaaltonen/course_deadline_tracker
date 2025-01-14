@@ -1,4 +1,5 @@
 import 'package:aalto_course_tracker/controllers/courses_controller.dart';
+import 'package:aalto_course_tracker/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -63,8 +64,10 @@ class _CourseCardState extends State<CourseCard> {
       },
       child: Card(
         color: isDarkMode
-            ? Color(widget.course.color).withValues(alpha: 0.9)
-            : Color(widget.course.color),
+            ? HelperFunctions()
+                .darkenColor(Color(widget.course.color), 0.7)
+                .withValues(alpha: 0.9)
+            : Color(widget.course.color).withValues(alpha: 0.95),
         shape: _isPressed
             ? RoundedRectangleBorder(
                 side: BorderSide(color: Colors.blue, width: 2.0),
@@ -81,9 +84,13 @@ class _CourseCardState extends State<CourseCard> {
                   : AppConstants.courseCardWidth,
           height: 80,
           child: InkWell(
-            hoverColor: Colors.blue.withValues(alpha: 0.2),
-            highlightColor: Colors.blue.withValues(alpha: 0.2),
-            splashColor: Colors.blue.withValues(alpha: 0.1),
+            excludeFromSemantics: true,
+            hoverColor:
+                const Color.fromARGB(255, 255, 255, 255).withValues(alpha: 0.4),
+            highlightColor:
+                const Color.fromARGB(255, 255, 255, 255).withValues(alpha: 0.4),
+            splashColor:
+                const Color.fromARGB(255, 255, 255, 255).withValues(alpha: 0.4),
             onTap: () {
               showDialog(
                 context: context,
@@ -129,7 +136,7 @@ class _CourseCardState extends State<CourseCard> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        AddDeadlineButton(courseId: widget.course.id),
+                        AddDeadlineButtonFromModal(courseId: widget.course.id),
                       ],
                     ),
                     content: CourseDialogContent(course: widget.course),
@@ -158,7 +165,8 @@ class _CourseCardState extends State<CourseCard> {
                       child: Container(
                         alignment: Alignment.centerRight,
                         child: size.width > BreakPoints.small
-                            ? AddDeadlineButton(courseId: widget.course.id)
+                            ? AddDeadlineButtonFromCourseCard(
+                                courseId: widget.course.id)
                             : Container(),
                       ),
                     ),

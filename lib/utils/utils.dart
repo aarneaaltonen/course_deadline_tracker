@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../constants.dart';
 
 class HelperFunctions {
@@ -33,5 +35,16 @@ class HelperFunctions {
         leftOffset + (totalDayProgress / totalDays) * availableWidth;
 
     return scaledPosition;
+  }
+
+  Color darkenColor(Color color, double factor) {
+    assert(
+        factor >= 0.0 && factor <= 1.0, 'Factor must be between 0.0 and 1.0');
+    return Color.fromARGB(
+      color.alpha,
+      (color.red * factor).toInt(),
+      (color.green * factor).toInt(),
+      (color.blue * factor).toInt(),
+    );
   }
 }

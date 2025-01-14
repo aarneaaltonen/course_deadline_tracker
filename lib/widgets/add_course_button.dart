@@ -35,7 +35,7 @@ class AddCourseButton extends StatelessWidget {
                       name: 'course_name',
                       focusNode: _focusNode,
                       decoration: InputDecoration(
-                        labelText: 'Course Name',
+                        labelText: 'Course Name *',
                       ),
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),

@@ -71,7 +71,7 @@ class PlanPage extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.home, color: Colors.white),
               onPressed: () {
-                Get.offAllNamed('/home');
+                Get.offAllNamed('/');
               },
             ),
             Spacer(),

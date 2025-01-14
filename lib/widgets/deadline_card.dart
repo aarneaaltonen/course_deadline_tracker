@@ -56,16 +56,24 @@ class _DeadlineCardState extends State<DeadlineCard> {
     }
   }
 
-  Color getDeadlineColor() {
+  Color getDeadlineColor(BuildContext context) {
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     if (widget.deadline.isCompleted) {
-      return Colors.green;
+      return isDarkMode ? const Color.fromARGB(255, 44, 122, 48) : Colors.green;
     } else if (widget.deadline.dueDate.isBefore(DateTime.now())) {
-      return Colors.red;
+      return isDarkMode
+          ? const Color.fromARGB(255, 150, 26, 26)
+          : const Color.fromARGB(255, 255, 116, 107);
     } else if (widget.deadline.dueDate.isBefore(
         DateTime.now().add(Duration(days: AppConstants.dangerZoneDays)))) {
-      return const Color.fromARGB(255, 255, 190, 93);
+      return isDarkMode
+          ? const Color.fromARGB(255, 178, 98, 0)
+          : const Color.fromARGB(255, 255, 190, 93);
     } else {
-      return Color.fromARGB(255, 121, 215, 249);
+      return isDarkMode
+          ? Color.fromARGB(255, 89, 61, 133)
+          : Color.fromARGB(255, 121, 215, 249);
     }
   }
 
@@ -75,7 +83,7 @@ class _DeadlineCardState extends State<DeadlineCard> {
     return Tooltip(
       message: getTimeLeftMessage(),
       decoration: ShapeDecoration(
-        color: getDeadlineColor(),
+        color: getDeadlineColor(context),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.0),
           side: BorderSide(
@@ -91,7 +99,7 @@ class _DeadlineCardState extends State<DeadlineCard> {
       verticalOffset: 10,
       preferBelow: false,
       child: Card(
-        color: getDeadlineColor(),
+        color: getDeadlineColor(context),
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.0),
@@ -99,6 +107,8 @@ class _DeadlineCardState extends State<DeadlineCard> {
         child: SizedBox(
           width: AppConstants().getDeadlineCardWidth(),
           child: InkWell(
+            hoverColor:
+                const Color.fromARGB(193, 255, 255, 255).withValues(alpha: 0.4),
             onTap: () {
               if (size.width > BreakPoints.medium) {
                 showModalSideSheet(
